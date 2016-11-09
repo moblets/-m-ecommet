@@ -1,0 +1,14 @@
+{
+  "fields": [
+    {
+      "name": "clientId",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "baseApiUrl",
+      "type": "url",
+      "required": true,
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "m-ecommet",
+  "version": "0.0.1",
+  "description": "This is a e-commerce moblet for ecommet.",
+  "main": "server/feed.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "cz-conventional-changelog": "^1.1.6",
+    "eslint": "^2.8.0",
+    "eslint-config-google": "^0.5.0",
+    "eslint-plugin-jsdoc": "^2.3.1",
+    "jsdoc": "^3.4.0"
+  },
+  "keywords": [
+    "example",
+    "base",
+    "Moblet",
+    "Moblets",
+    "FabApp",
+    "list",
+    "simple"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

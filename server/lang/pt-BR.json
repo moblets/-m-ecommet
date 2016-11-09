@@ -1,0 +1,17 @@
+{
+  "moblet": {
+    "label": "Ecommet",
+    "hint": "Crie sua loja virtual",
+    "description": "Preencha os campos abaixo com seus dados da Ecommet para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
+  },
+  "clientId": {
+    "label": "ID do cliente",
+    "hint": "Insira o ID de cliente da Ecommet",
+    "placeholder": "1826378"
+  },
+  "baseApiUrl": {
+    "label": "URL base da loja",
+    "hint": "Insira a URL base para as chamadas de API",
+    "placeholder": "https://services.virtualkar.com.br/rest/"
+  }
+}
