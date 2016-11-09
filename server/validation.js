@@ -6,7 +6,7 @@ module.exports = {
    * validation finishes. The callback parameters are a Boolean, that responds
    * if it's valid and an Object with the response data
    */
-  clientId: function(data, callback) {
+  moblet: function(data, callback) {
     var valid = true;
     // var response = {};
     // if (data.clientId !== 'olar') {
