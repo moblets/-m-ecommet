@@ -25,40 +25,40 @@ module.exports = {
        * @param  {boolean} more If called by "more" function, it will add the
        * data to the items array
        */
-      // setView: function(data) {
-      //   if (isDefined(data)) {
-      //     $scope.error = false;
-      //     $scope.emptyData = false;
-      //     $scope.apiUrl = data.apiUrl;
-			//
-      //     // set empty itens if no content
-      //     if ($scope.noContent) {
-      //       $scope.items = [];
-      //     }
-			//
-      //     // Check if the page is loading the list or a detail
-      //     // $scope.isDetail = list.isDetail();
-      //     $scope.isDetail = false;
-      //   } else {
-      //     $scope.error = true;
-      //     $scope.emptyData = true;
-      //   }
-			//
-      //   // Broadcast complete refresh and infinite scroll
-      //   $rootScope.$broadcast('scroll.refreshComplete');
-      //   $rootScope.$broadcast('scroll.infiniteScrollComplete');
-			//
-      //   // If the view is showing the detail, call showDetail
-      //   if ($scope.items.length === 1) {
-      //     $scope.isDetail = true;
-      //     list.showDetail(0);
-      //   } else if ($scope.isDetail) {
-      //     list.showDetail();
-      //   }
-			//
-      //   // Remove the loading animation
-      //   $scope.isLoading = false;
-      // },
+      setView: function(data) {
+        if (isDefined(data)) {
+          $scope.error = false;
+          $scope.emptyData = false;
+          $scope.apiUrl = data.apiUrl;
+
+          // set empty itens if no content
+          if ($scope.noContent) {
+            $scope.items = [];
+          }
+
+          // Check if the page is loading the list or a detail
+          // $scope.isDetail = list.isDetail();
+          $scope.isDetail = false;
+        } else {
+          $scope.error = true;
+          $scope.emptyData = true;
+        }
+
+        // Broadcast complete refresh and infinite scroll
+        $rootScope.$broadcast('scroll.refreshComplete');
+        $rootScope.$broadcast('scroll.infiniteScrollComplete');
+
+        // If the view is showing the detail, call showDetail
+        // if ($scope.items.length === 1) {
+        //   $scope.isDetail = true;
+        //   list.showDetail(0);
+        // } else if ($scope.isDetail) {
+        //   list.showDetail();
+        // }
+
+        // Remove the loading animation
+        $scope.isLoading = false;
+      },
       /**
        * Check if the view is showing a detail or the list. The function checks
        * if $stateParams.detail is set.
