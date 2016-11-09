@@ -7,17 +7,16 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   clientId: function(id, callback) {
-    console.log(id);
     var valid = false;
     var response = {};
     if (id !== 'olar') {
       valid = true;
-      response = {
-        data: {
-          apiUrl: 'https://services.virtualkar.com.br/rest/'
-        }
-      };
     }
+		response = {
+			data: {
+				apiUrl: 'https://services.virtualkar.com.br/rest/'
+			}
+		};
     callback(valid, response);
   }
 };
