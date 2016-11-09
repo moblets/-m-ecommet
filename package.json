@@ -1,7 +1,7 @@
 {
   "name": "m-ecommet",
   "version": "0.0.1",
-  "description": "This is a e-commerce moblet for ecommet.",
+  "description": "This is an e-commerce moblet for Ecommet.",
   "main": "server/feed.js",
   "scripts": {
     "test": "jasmine"
