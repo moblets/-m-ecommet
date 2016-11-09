@@ -7,7 +7,7 @@
     },
     {
       "name": "baseApiUrl",
-      "type": "url",
+      "type": "text",
       "required": true,
     }
   ]
