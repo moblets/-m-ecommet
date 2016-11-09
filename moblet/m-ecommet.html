@@ -2,22 +2,9 @@
   <m-content reload="load" more="more" >
     <!-- LIST -->
     <div class="list" ng-if="!isDetail">
-      
       <!-- CARD STYLE -->
-      <div ng-if="isCard" class="item style-card" ng-repeat="(key, item) in items"
-           ng-click="goTo(item)">
-        <h1 ng-bind="item.title"></h1>
-				<p ng-bind-html="stripHtml(item.description) | mCut:100"></p>
-				<img ng-src="{{item.image | mEncoder:'crop':70:114}}" img-resize>
-      </div>
-      <!-- LIST ITEM -->
-      <div ng-if="isList" class="item style-list" ng-repeat="(key, item) in items"
-           ng-click="goTo(item)">
-				<div class="img-container" ng-if="isList">
-					<img ng-src="{{item.image | mEncoder:'crop':70:114}}" img-resize>
-				</div>
-        <h1 ng-bind="item.title"></h1>
-				<p ng-bind-html="stripHtml(item.description) | mCut:60"></p>
+      <div ng-if="isCard">
+        <h1 ng-bind="apiUrl"></h1>
       </div>
     </div>
     <!-- Detail -->

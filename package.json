@@ -6,7 +6,13 @@
   "scripts": {
     "test": "jasmine"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moblets/m-ecommet.git"
+  },
+  "author": "Eduardo Russo",
   "license": "MIT",
+  "homepage": "https://github.com/moblets/m-ecommet.git",
   "devDependencies": {
     "cz-conventional-changelog": "^1.1.6",
     "eslint": "^2.8.0",
