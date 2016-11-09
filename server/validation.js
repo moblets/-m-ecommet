@@ -6,15 +6,16 @@ module.exports = {
    * validation finishes. The callback parameters are a Boolean, that responds
    * if it's valid and an Object with the response data
    */
-  clientId: function(id, callback) {
+  validate: function(data, callback) {
     var valid = false;
     var response = {};
-    if (id !== 'olar') {
+    if (data.clientId !== 'olar') {
       valid = true;
     }
 		response = {
 			data: {
-				apiUrl: 'https://services.virtualkar.com.br/rest/'
+				apiUrl: 'https://services.virtualkar.com.br/rest/',
+				test: data
 			}
 		};
     callback(valid, response);
