@@ -14,7 +14,8 @@ module.exports = {
     $timeout,
     $state,
     $stateParams,
-    $mDataLoader
+    $mDataLoader,
+    $http
   ) {
     var dataLoadOptions;
     var list = {
@@ -117,12 +118,8 @@ module.exports = {
        * is active
        * @param {function} callback Callback
        */
-      load: function(showLoader, callback) {
+      loadMainPage: function(showLoader, callback) {
         $scope.isLoading = showLoader || false;
-        // Reset the pagination
-        if (showLoader === true || showLoader === undefined) {
-          dataLoadOptions.offset = 0;
-        }
         // mDataLoader also saves the response in the local cache. It will be
         // used by the "showDetail" function
         $mDataLoader.load($scope.moblet, dataLoadOptions)
@@ -135,57 +132,37 @@ module.exports = {
         );
       },
       /**
-       * Load more data from the backend if there are more items.
-       * - Update the offset summing the number of items
-       - Use $mDataLoader.load to get the moblet data from Moblets backend.
-       * 	 The parameters passed to $mDataLoader.load are:
-       * 	 - $scope.moblet - the moblet created in the init function
-       * 	 - false - A boolean that sets if you want to load data from the
-       * 	   device storage or from the Moblets API
-       * 	 - dataLoadOptions - An object with parameters for pagination
-       */
-      more: function() {
-        // Add the items to the offset
-        dataLoadOptions.offset += dataLoadOptions.items;
-
-        $mDataLoader.load($scope.moblet, dataLoadOptions)
-          .then(function(data) {
-            list.setView(data, true);
-          });
-      },
-      /**
        * Initiate the list moblet:
        * - put the list.load function in the $scope
        * - run list.load function
        */
-      /*
-       * TODO go to detail if url is called
-       */
       init: function() {
-        dataLoadOptions = {
-          offset: 0,
-          items: 25,
-          listKey: 'items',
-          cache: ($stateParams.detail !== "")
-        };
-        $scope.load(true);
+        $scope.isLoading = true;
+				                                                                                dataLoadOptions = {
+  cache: ($stateParams.detail !== "")
+};
+        $mDataLoader.load($scope.moblet, {cache: false})
+          .then(function(ecommetData) {
+            if (_.isEmpty(ecommetData)) {
+              $scope.emptyData = true;
+              $scope.isLoading = false;
+            } else {
+              $scope.emptyData = false;
+              // Put the ecommetData from the feed in the $scope object
+              $scope.ecommetData = ecommetData;
+
+              loadMainPage();
+            }
+          }
+				);
       }
     };
-
-    var listItem = {
-      goTo: function(detail) {
-        $stateParams.detail = detail.id;
-        $state.go('pages', $stateParams);
-      }
-    };
-
-    $scope.stripHtml = function(str) {
-      return str.replace(/<[^>]+>/ig, " ");
-    };
-
-    $scope.load = list.load;
-    $scope.init = list.init;
-    $scope.goTo = listItem.goTo;
+    // var listItem = {
+    //   goTo: function(detail) {
+    //     $stateParams.detail = detail.id;
+    //     $state.go('pages', $stateParams);
+    //   }
+    // };
     list.init();
   }
 };
