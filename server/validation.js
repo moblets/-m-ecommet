@@ -8,16 +8,26 @@ module.exports = {
    */
   moblet: function(data, callback) {
     var valid = true;
-    // var response = {};
-    // if (data.clientId !== 'olar') {
-    //   valid = true;
-    // }
+		// Validation debug
+		// In the future, test if it's a valid client ID
+    if (data.clientId == 'olar') {
+      valid = false;
+    }
+		// Get apiUrl from the API if possible
 		var response = {
 			data: {
 				apiUrl: 'https://services.virtualkar.com.br/rest/',
-				test: data
 			}
 		};
+		// if not possible, add to the form.json
+		// ,
+		// {
+    //   "name": "baseApiUrl",
+    //   "type": "text",
+    //   "required": true,
+    //   "min-length": 13,
+    //   "max-length": 120
+    // }
     callback(valid, response);
   }
 };

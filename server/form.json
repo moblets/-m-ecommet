@@ -6,13 +6,6 @@
       "required": true,
       "min-length": 1,
       "max-length": 30
-    },
-    {
-      "name": "baseApiUrl",
-      "type": "text",
-      "required": true,
-      "min-length": 13,
-      "max-length": 120
     }
   ]
 }
