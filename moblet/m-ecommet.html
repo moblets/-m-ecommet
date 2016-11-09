@@ -1,10 +1,11 @@
 <m-moblet init="init"  is-loading="isLoading" inner-scroll="true" no-content="noContent" unavaliable="error">
   <m-content reload="load" more="more" >
-    <!-- LIST -->
-    <div class="list">
-      <!-- CARD STYLE -->
+    <div class="store">
+			<div class="search-bar">
+				<input type="search" name="products" value="">
       <div>
-        <h1 ng-bind="apiUrl"></h1>
+        <h1 ng-bind="store.titleHome"></h1>
+        <img ng-src="{{slider[0].image}}" alt="{{slider[0].alt}}" class="store-slider"/>
       </div>
     </div>
     <!-- Detail -->

@@ -18,7 +18,20 @@ module.exports = {
     $http
   ) {
     var dataLoadOptions;
+    var apiUrl = '';
     var ecommet = {
+      getData: function(url, callback) {
+        $http.get(apiUrl + url)
+          .then(
+            function(response) {
+              callback(false, response);
+            },
+            function(error) {
+              console.log(error);
+              calback(true)
+            }
+          );
+      },
       /**
        * Set the view and update the needed parameters
        * @param  {object} data Data received from Moblets backend
@@ -26,11 +39,35 @@ module.exports = {
        * data to the items array
        */
       setView: function(data) {
+        var count = 0;
+        function finishedLoading () {
+          count += 1;
+          if (count === 2) {
+            $scope.isLoading = false;
+          }
+        }
         if (isDefined(data)) {
           $scope.error = false;
           $scope.emptyData = false;
-          $scope.apiUrl = data.apiUrl;
-
+          apiUrl = data.apiUrl;
+          ecommet.getData('common/conf/store', function(error, response) {
+            if (error) {
+              console.log(response);
+            } else {
+              $scope.store = response.data;
+              console.log($scope.store);
+              finishedLoading();
+            }
+          });
+          ecommet.getData('slider/list/section', function(error, response) {
+            if (error) {
+              console.log(response);
+            } else {
+              $scope.slider = response.data;
+              console.log($scope.slider);
+              finishedLoading();
+            }
+          });
           // set empty itens if no content
           if ($scope.noContent) {
             $scope.items = [];
@@ -57,7 +94,7 @@ module.exports = {
         // }
 
         // Remove the loading animation
-        $scope.isLoading = false;
+
       },
       /**
        * Check if the view is showing a detail or the list. The function checks
