@@ -21,13 +21,13 @@
     "jsdoc": "^3.4.0"
   },
   "keywords": [
-    "example",
-    "base",
     "Moblet",
     "Moblets",
     "FabApp",
-    "list",
-    "simple"
+    "e-commerce",
+    "ecommet",
+    "shopping",
+    "cart"
   ],
   "config": {
     "commitizen": {

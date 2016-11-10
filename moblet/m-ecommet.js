@@ -11,6 +11,7 @@ module.exports = {
     $scope,
     $rootScope,
     $filter,
+    $interval,
     $timeout,
     $state,
     $stateParams,
@@ -20,6 +21,52 @@ module.exports = {
     var dataLoadOptions;
     var apiUrl = '';
     var ecommet = {
+      getHeight: function() {
+        var maxHeight = 0;
+        for (var i = 0; i < $scope.slider.length; i++) {
+          var tmpImg = new Image();
+          tmpImg.src = $scope.slider[i].image;
+          tmpImg.onload = function () {
+            var proportion = window.screen.width / tmpImg.width;
+            var height = tmpImg.height * proportion;
+            maxHeight = height > maxHeight ? height : maxHeight;
+            $timeout(function () {
+              $scope.slider.height = maxHeight + 10 + 'px';
+            }, 10);
+          }
+        }
+      },
+      startSlider: function() {
+        function getNext(value) {
+          if (value < loopCount) {
+            return value + 1;
+          } else {
+            return 0;
+          }
+        }
+
+        var loopCount = $scope.slider.length - 1;
+        var current = 0;
+        var previous = loopCount;
+        var next = getNext(current);
+
+        $scope.slider[current].currentSlide = ' current-slide';
+        $scope.slider[next].nextSlide = ' next-slide';
+
+        $interval(function () {
+            previous = current;
+            current = getNext(current);
+            next = getNext(current);
+
+            $scope.slider[current].currentSlide = ' current-slide';
+            $scope.slider[current].nextSlide = '';
+
+            $scope.slider[previous].currentSlide = '';
+
+            $scope.slider[next].nextSlide = ' next-slide';
+          }, 3000);
+        ecommet.getHeight();
+      },
       getData: function(url, callback) {
         $http.get(apiUrl + url)
           .then(
@@ -55,7 +102,6 @@ module.exports = {
               console.log(response);
             } else {
               $scope.store = response.data;
-              console.log($scope.store);
               finishedLoading();
             }
           });
@@ -64,7 +110,7 @@ module.exports = {
               console.log(response);
             } else {
               $scope.slider = response.data;
-              console.log($scope.slider);
+              ecommet.startSlider();
               finishedLoading();
             }
           });
