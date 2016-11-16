@@ -1,17 +1,19 @@
 {
   "moblet": {
-    "label": "Ecommet",
-    "hint": "Crie sua loja virtual",
-    "description": "Preencha os campos abaixo com seus dados da Ecommet para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
+    "label": "Becommerce",
+    "hint": "Crie sua loja virtual na Becommerce",
+    "description": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
+  },
+  "clientUrl": {
+    "label": "URL da loja",
+    "hint": "Insira a URL da loja da Becommerce",
+    "placeholder": "virtualkar.com.br",
+    "url_error": "URL não é de uma loja Becommerce válida"
   },
   "clientId": {
-    "label": "ID do cliente",
-    "hint": "Insira o ID de cliente da Ecommet",
-    "placeholder": "1826378"
-  },
-  "baseApiUrl": {
-    "label": "URL base da loja",
-    "hint": "Insira a URL base para as chamadas de API",
-    "placeholder": "https://services.virtualkar.com.br/rest/"
+    "label": "ID de cliente",
+    "hint": "Insira o ID do cliente Becommerce",
+    "placeholder": "4594455",
+    "url_hash_check": "ID não confere com a URL da loja"
   }
 }

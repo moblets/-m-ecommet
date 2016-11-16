@@ -1,18 +1,18 @@
 {
-  "name": "m-ecommet",
+  "name": "m-becommerce",
   "version": "0.0.1",
-  "description": "This is an e-commerce moblet for Ecommet.",
+  "description": "This is an e-commerce moblet for Becommerce.",
   "main": "server/feed.js",
   "scripts": {
     "test": "jasmine"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/moblets/m-ecommet.git"
+    "url": "git+https://github.com/moblets/m-becommerce.git"
   },
   "author": "Eduardo Russo",
   "license": "MIT",
-  "homepage": "https://github.com/moblets/m-ecommet.git",
+  "homepage": "https://github.com/moblets/m-becommerce.git",
   "devDependencies": {
     "cz-conventional-changelog": "^1.1.6",
     "eslint": "^2.8.0",
@@ -26,6 +26,7 @@
     "FabApp",
     "e-commerce",
     "ecommet",
+    "becommerce",
     "shopping",
     "cart"
   ],
