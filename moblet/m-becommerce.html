@@ -4,12 +4,16 @@
 			<div class="search-bar">
 				<input type="search" name="products" value="">
       </div>
-      <div class="carouselbox" style="height: {{slider.height}}">
-        <div ng-repeat="slide in slider">
-          <img class="slide{{slide.currentSlide}}{{slide.nextSlide}}" ng-src="{{slide.image}}" alt="{{slider.alt}}" class="store-slider"/>
-        </div>
+
+      <div class="banner">
+        <img ng-src="{{banners[0].image}}" alt="{{banners[0].alt}}" class="store-banner"/>
       </div>
       <h1 ng-bind="store.titleHome"></h1>
+      <div class="categories">
+        <div ng-repeat="category in categories">
+          <p>{{category.name}}</p>
+        </div>
+      </div>
     </div>
     <!-- Detail -->
     <div class="detail m-theme-null-background {{ itemStyle }}" ng-if="isDetail">
