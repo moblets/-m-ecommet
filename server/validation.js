@@ -9,7 +9,6 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   moblet: function(data, callback) {
-    console.log(data.clientUrl);
     var valid = false;
     var response = {};
     var options = {
@@ -21,8 +20,6 @@ module.exports = {
 
     var req = https.request(options, res => {
       var body = '';
-      console.log(res.statusCode);
-
       // URL not found = response !== 200
       if (res.statusCode !== 200) {
         valid = false;
@@ -41,9 +38,6 @@ module.exports = {
       // URL found. response finished
       res.on('end', function() {
         body = JSON.parse(body);
-        console.log(body);
-        console.log(data.clientId);
-        console.log(body.clientHash);
         if (body.clientHash === undefined) {
           // Client HASH not found on response
           valid = false;
