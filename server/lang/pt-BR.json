@@ -1,8 +1,8 @@
 {
   "moblet": {
     "label": "Becommerce",
-    "hint": "Crie sua loja virtual na Becommerce",
-    "description": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
+    "description": "Crie sua loja virtual na Becommerce",
+    "hint": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
   },
   "clientUrl": {
     "label": "URL da loja",

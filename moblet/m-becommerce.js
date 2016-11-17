@@ -31,15 +31,15 @@ module.exports = {
             instanceData = {
               apiUrl: data.apiUrl,
               clientUrl: data.clientUrl,
-              clientId: data.clientId,
               store: data.apiUrl + 'common/conf/store/',
-              sections: {
-                3: data.apiUrl + 'product/list/section/3/',
-                4: data.apiUrl + 'product/list/section/4/',
-                5: data.apiUrl + 'product/list/section/5/'
-              },
               // banner: data.apiUrl + 'app_banner/list/section/',
               banner: data.apiUrl + 'slider/list/section/',
+              cart: data.apiUrl + 'cart/',
+              sections: {
+                section3: data.apiUrl + 'product/list/section/3/',
+                section4: data.apiUrl + 'product/list/section/4/',
+                section5: data.apiUrl + 'product/list/section/5/'
+              },
               detail: function(productId) {
                 return data.apiUrl + 'product/detail/' + productId;
               },
@@ -47,7 +47,6 @@ module.exports = {
                 return data.apiUrl + 'product/list/similar/' +
                        productId;
               },
-              cart: data.apiUrl + 'cart/',
               shipping: function(zipCode, productId) {
                 return data.apiUrl + 'cart/shipping-list/' +
                        zipCode + '/' + productId + '/1';
@@ -127,11 +126,12 @@ module.exports = {
       /**
        * Show the moblet main view
        * @param {Object} data The data from the instance plus all API URLs
+       * @return {Promise}
        */
       showMainView: function(data) {
         var deferred = $q.defer();
         var finished = 0;
-        var totalLoad = 2;
+        var totalLoad = 5;
 
         var finishedLoading = function() {
           finished += 1;
@@ -160,6 +160,33 @@ module.exports = {
             .then(function(response) {
               $scope.banners = response.data;
               console.log($scope.banners);
+              finishedLoading();
+            })
+            .catch(function(error) {
+              console.error(error);
+            });
+          model.getData(data.sections.section3)
+            .then(function(response) {
+              $scope.section3 = response.data;
+              console.log($scope.section3);
+              finishedLoading();
+            })
+            .catch(function(error) {
+              console.error(error);
+            });
+          model.getData(data.sections.section4)
+            .then(function(response) {
+              $scope.section4 = response.data;
+              console.log($scope.section4);
+              finishedLoading();
+            })
+            .catch(function(error) {
+              console.error(error);
+            });
+          model.getData(data.sections.section5)
+            .then(function(response) {
+              $scope.section5 = response.data;
+              console.log($scope.section5);
               finishedLoading();
             })
             .catch(function(error) {
