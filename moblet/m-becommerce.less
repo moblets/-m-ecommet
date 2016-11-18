@@ -1,4 +1,7 @@
 m-becommerce {
+  @product-font-size: 13px;
+  @product-line-height: 1.4;
+  @product-lines-to-show: 2;
 	.store {
 		.search-bar {
 	    display: block;
@@ -43,26 +46,30 @@ m-becommerce {
         padding-top: 10px;
       }
       padding: 0 10px;
-      :nth-child(odd) {
+      :nth-child(even) {
         margin-right: 10px;
       }
       .product {
         margin-bottom: 10px;
         padding: 10px;
         width: ~"calc(50% - 5px)";
-        background-color: red;
         float: left;
         background: #FFFFFF;
-        font-size: 13px;
         color: #4A4A4A;
-        line-height: 18px;
         img {
           width: 100%;
         }
         .name {
-          padding: 10px 0;
-          margin: 0;
-          line-height: 18px;
+          font-size: @product-font-size;
+          display: -webkit-box;
+          -webkit-line-clamp: @product-lines-to-show;
+          -webkit-box-orient: vertical;
+          margin: 10px 0;
+          white-space: normal;
+          height: @product-font-size*@product-line-height*@product-lines-to-show;
+          line-height: @product-line-height;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .value {
           line-height: 18px;
@@ -72,10 +79,10 @@ m-becommerce {
         }
         .value-from {
           font-size: 11px;
+          font-weight: normal;;
           text-decoration: line-through;
         }
         .value-to {
-          color: #F37300;
         }
       }
     }

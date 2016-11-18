@@ -6,7 +6,9 @@ module.exports = {
   i18n: {
     pt: "lang/pt-BR.json"
   },
-  link: function() {},
+  link: function() {
+    $mInjector.inject('https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.5.8/angular-locale_pt-br.min.js');
+  },
   controller: function(
     $scope,
     $rootScope,
@@ -90,6 +92,16 @@ module.exports = {
     // var dataLoadOptions;
     // var apiUrl = '';
     var controller = {
+      localizeCurrency: function(value) {
+        console.log(value);
+        var corrected = $filter('currency')(value, "R$", 2);
+        console.log(corrected);
+        var splited = corrected.split('.');
+        console.log(splited);
+        var localized = splited[0].replace(',', '.') + '.' + splited[1];
+        console.log(localized);
+        return localized;
+      },
       /**
        * Check if the view is showing a detail or the list. The function checks
        * if $stateParams.detail is set.
@@ -137,7 +149,6 @@ module.exports = {
         var finishedLoading = function() {
           finished += 1;
           if (finished === totalLoad) {
-            console.log(sections);
             $scope.sections = sections;
             deferred.resolve('ok');
           }
@@ -152,7 +163,6 @@ module.exports = {
             .then(function(response) {
               $scope.store = response.data;
               $scope.categories = response.data.headerJson.headerCategoryJsons;
-              console.log($scope.store);
               finishedLoading();
             })
             .catch(function(error) {
@@ -162,7 +172,6 @@ module.exports = {
           model.getData(data.banner)
             .then(function(response) {
               $scope.banners = response.data;
-              console.log($scope.banners);
               finishedLoading();
             })
             .catch(function(error) {
@@ -201,9 +210,6 @@ module.exports = {
             .catch(function(error) {
               console.error(error);
             });
-        // Check if the page is loading the list or a detail
-        // $scope.isDetail = list.isDetail();
-        // $scope.isDetail = false;
         } else {
           $scope.error = true;
           $scope.emptyData = true;
@@ -217,6 +223,7 @@ module.exports = {
 
       init: function() {
         $scope.isLoading = true;
+        $scope.localizeCurrency = controller.localizeCurrency;
         model.setInstanceData()
           .then(function(data) {
             console.debug(instanceData);

@@ -11,7 +11,7 @@
       </div>
       <!-- BANNER -->
       <div class="banner">
-        <img ng-src="{{banners[0].image}}" alt="{{banners[0].alt}}" class="store-banner"/>
+        <img ng-src="{{ banners[0].image }}" alt="{{ banners[0].alt }}" class="store-banner"/>
       </div>
       <!-- SECTIONS -->
       <div class="sections" ng-repeat="section in sections">
@@ -24,17 +24,32 @@
           ng-repeat="product in section.products"
           ng-if="section.products.length > 0"
           >
-            <img src="{{product.thumbnail}}" alt="{{product.id}}-{{product.name}}" />
-            <p class="name">{{product.name}}</p>
-            <p ng-if="product.valueFrom" class="value value-from">R$ {{product.valueFrom}}</p>
-            <p ng-if="product.valueFrom" class="value value-to">R$ {{product.valueTo}}</p>
-            <p ng-if="!product.valueFrom" class="value">R$ {{product.valueTo}}</p>
+            <!-- <div id="img-{{ item.id }}" class="thumb" ng-style="{'background-image':'url({{ item.image }})'}" ></div>
+            <img id="control-img-{{ item.id }}" image-id="{{ item.id }}" onload="malbumImageLoaded(this)"  ng-src="{{ item.image }}" style="display:none" /> -->
+
+            <img src="{{ product.thumbnail }}" alt="{{ product.id }}-{{ product.name }}" />
+            <p class="name">{{ product.name }}</p>
+            <p
+              ng-if="product.valueFrom && product.valueFrom > product.valueTo"
+              class="value value-from">
+              {{ localizeCurrency(product.valueFrom) }}
+            </p>
+            <p
+              ng-if="product.valueFrom && product.valueFrom > product.valueTo"
+              class="value value-to m-theme-text-color">
+              {{ localizeCurrency(product.valueTo) }}
+            </p>
+            <p
+              ng-if="!product.valueFrom || product.valueFrom <= product.valueTo"
+              class="value m-theme-text-color">
+              {{ localizeCurrency(product.valueTo) }}
+            </p>
         </div>
       </div>
     </div>
     <!-- Detail -->
     <div class="detail m-theme-null-background {{ itemStyle }}" ng-if="isDetail">
-      <img class="full-width-image" ng-src="{{detail.image}}">
+      <img class="full-width-image" ng-src="{{ detail.image }}">
       <div class="detail-container">
         <h1 class="title" ng-bind="detail.title"></h1>
         <div class="description" m-bind-html="detail.description"></div>
