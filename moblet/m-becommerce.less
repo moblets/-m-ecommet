@@ -1,14 +1,31 @@
 m-becommerce {
 	.store {
 		.search-bar {
-	    width: ~"calc(100% - 20px)";
 	    display: block;
-	    margin: 10px;
-	    input {
-	      width: 100%;
-        border: 1px solid #555555;
-        border-radius: 10px;
+	    padding: 10px 10px 12px 10px;
+	    .search-input {
+        height: 30px;
+	      width: ~"calc(100% - 20px)";
+        border-radius: 5px;
+        padding: 0 10px;
+        background: #FFFFFF;
 			}
+      .store-menu {
+        padding-top: 12px;
+        display: flex;
+        text-align: center;
+        .menu-button{
+          font-family: "Helvetica Neue",Roboto,"Segoe UI",sans-serif;
+          width: 50%;
+          font-size: 14px;
+          letter-spacing: 0;
+          opacity: 0.6;
+        }
+        .selected {
+          font-weight: 400;
+          opacity: 1;
+        }
+      }
 		}
     .banner{
       img {
