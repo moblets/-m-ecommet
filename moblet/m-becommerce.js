@@ -45,11 +45,11 @@ module.exports = {
               },
               similar: function(productId) {
                 return data.apiUrl + 'product/list/similar/' +
-                       productId;
+                  productId;
               },
               shipping: function(zipCode, productId) {
                 return data.apiUrl + 'cart/shipping-list/' +
-                       zipCode + '/' + productId + '/1';
+                  zipCode + '/' + productId + '/1';
               }
             };
             deferred.resolve(instanceData);
@@ -71,21 +71,21 @@ module.exports = {
               console.error(error);
               deferred.reject(error);
             }
-          );
+        );
         return deferred.promise;
       }
-      // getData: function(url, callback) {
-      //   $http.get(apiUrl + url)
-      //     .then(
-      //       function(response) {
-      //         callback(false, response);
-      //       },
-      //       function(error) {
-      //         console.log(error);
-      //         calback(true);
-      //       }
-      //     );
-      // }
+    // getData: function(url, callback) {
+    //   $http.get(apiUrl + url)
+    //     .then(
+    //       function(response) {
+    //         callback(false, response);
+    //       },
+    //       function(error) {
+    //         console.log(error);
+    //         calback(true);
+    //       }
+    //     );
+    // }
     };
     // var dataLoadOptions;
     // var apiUrl = '';
@@ -132,10 +132,13 @@ module.exports = {
         var deferred = $q.defer();
         var finished = 0;
         var totalLoad = 5;
+        var sections = [];
 
         var finishedLoading = function() {
           finished += 1;
           if (finished === totalLoad) {
+            console.log(sections);
+            $scope.sections = sections;
             deferred.resolve('ok');
           }
         };
@@ -167,8 +170,10 @@ module.exports = {
             });
           model.getData(data.sections.section3)
             .then(function(response) {
-              $scope.section3 = response.data;
-              console.log($scope.section3);
+              sections[0] = {
+                name: 'Vitrine 1',
+                products: response.data
+              };
               finishedLoading();
             })
             .catch(function(error) {
@@ -176,8 +181,10 @@ module.exports = {
             });
           model.getData(data.sections.section4)
             .then(function(response) {
-              $scope.section4 = response.data;
-              console.log($scope.section4);
+              sections[1] = {
+                name: 'Vitrine 2',
+                products: response.data
+              };
               finishedLoading();
             })
             .catch(function(error) {
@@ -185,8 +192,10 @@ module.exports = {
             });
           model.getData(data.sections.section5)
             .then(function(response) {
-              $scope.section5 = response.data;
-              console.log($scope.section5);
+              sections[2] = {
+                name: 'Vitrine 3',
+                products: response.data
+              };
               finishedLoading();
             })
             .catch(function(error) {
@@ -194,13 +203,13 @@ module.exports = {
             });
         // Check if the page is loading the list or a detail
         // $scope.isDetail = list.isDetail();
-          // $scope.isDetail = false;
+        // $scope.isDetail = false;
         } else {
           $scope.error = true;
           $scope.emptyData = true;
         }
 
-      // Broadcast complete refresh and infinite scroll
+        // Broadcast complete refresh and infinite scroll
         $rootScope.$broadcast('scroll.refreshComplete');
         $rootScope.$broadcast('scroll.infiniteScrollComplete');
         return deferred.promise;

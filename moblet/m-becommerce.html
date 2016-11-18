@@ -1,6 +1,7 @@
 <m-moblet init="init"  is-loading="isLoading" inner-scroll="true" no-content="noContent" unavaliable="error">
   <m-content reload="load" more="more" >
     <div class="store">
+      <!-- SEARCH BAR -->
 			<div class="search-bar m-theme-bar-top">
 				<input class="search-input" type="search" ng-model="search" name="products" placeholder="Buscar">
         <div class="store-menu">
@@ -8,38 +9,26 @@
           <div class="menu-button m-theme-button" type="button" name="button">Categorias</div>
         </div>
       </div>
-
+      <!-- BANNER -->
       <div class="banner">
         <img ng-src="{{banners[0].image}}" alt="{{banners[0].alt}}" class="store-banner"/>
       </div>
-      {{search}}
-      <h1 ng-bind="store.titleHome"></h1>
-      <div class="categories">
-        <div ng-repeat="category in categories">
-          <p>{{category.name}}</p>
-        </div>
-      </div>
-      <!-- <div class="sections">
-        <div ng-repeat="product in section3">
-          <img src="{{product.thumbnail}}" alt="{{product.id}}-{{product.name}}" />
-        </div>
-      </div> -->
-      <div class="sections">
-        <div class="product" ng-repeat="product in section4">
-          <img src="{{product.thumbnail}}" alt="{{product.id}}-{{product.name}}" />
-          <p class="name">{{product.name}}</p>
-          <p ng-if="product.valueFrom" class="value value-from">R$ {{product.valueFrom}}</p>
-          <p ng-if="product.valueFrom" class="value value-to">R$ {{product.valueTo}}</p>
-          <p ng-if="!product.valueFrom" class="value">R$ {{product.valueTo}}</p>
-        </div>
-      </div>
-      <div class="sections">
-        <div class="product" ng-repeat="product in section5">
-          <img src="{{product.thumbnail}}" alt="{{product.id}}-{{product.name}}" />
-          <p class="name">{{product.name}}</p>
-          <p ng-if="product.valueFrom" class="value value-from">R$ {{product.valueFrom}}</p>
-          <p ng-if="product.valueFrom" class="value value-to">R$ {{product.valueTo}}</p>
-          <p ng-if="!product.valueFrom" class="value">R$ {{product.valueTo}}</p>
+      <!-- SECTIONS -->
+      <div class="sections" ng-repeat="section in sections">
+        <h1 class="section-title m-theme-text-color"
+            ng-if="section.products.length > 0"
+            ng-bind="section.name">
+        </h1>
+        <div
+          class="product"
+          ng-repeat="product in section.products"
+          ng-if="section.products.length > 0"
+          >
+            <img src="{{product.thumbnail}}" alt="{{product.id}}-{{product.name}}" />
+            <p class="name">{{product.name}}</p>
+            <p ng-if="product.valueFrom" class="value value-from">R$ {{product.valueFrom}}</p>
+            <p ng-if="product.valueFrom" class="value value-to">R$ {{product.valueTo}}</p>
+            <p ng-if="!product.valueFrom" class="value">R$ {{product.valueTo}}</p>
         </div>
       </div>
     </div>
