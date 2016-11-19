@@ -24,10 +24,20 @@
           ng-repeat="product in section.products"
           ng-if="section.products.length > 0"
           >
-            <!-- <div id="img-{{ item.id }}" class="thumb" ng-style="{'background-image':'url({{ item.image }})'}" ></div>
-            <img id="control-img-{{ item.id }}" image-id="{{ item.id }}" onload="malbumImageLoaded(this)"  ng-src="{{ item.image }}" style="display:none" /> -->
-
-            <img src="{{ product.thumbnail }}" alt="{{ product.id }}-{{ product.name }}" />
+            <div class="skeleton thumb-size">
+              <div
+                id="img-{{ product.id }}"
+                class="thumb"
+                ng-style="{'background-image':'url({{ product.thumbnail }})'}">
+              </div>
+              <img
+                id="control-img-{{ product.id }}"
+                image-id="{{ product.id }}"
+                onload="malbumImageLoaded(this)"
+                ng-src="{{ product.thumbnail }}"
+                style="display:none" />
+            </div>
+            <!-- <img src="{{ product.thumbnail }}" alt="{{ product.id }}-{{ product.name }}" /> -->
             <p class="name">{{ product.name }}</p>
             <p
               ng-if="product.valueFrom && product.valueFrom > product.valueTo"

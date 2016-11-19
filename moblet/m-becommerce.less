@@ -2,6 +2,21 @@ m-becommerce {
   @product-font-size: 13px;
   @product-line-height: 1.4;
   @product-lines-to-show: 2;
+  @-webkit-keyframes skeleton {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 51%}
+    100%{background-position:0% 50%}
+  }
+  @-moz-keyframes skeleton {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 51%}
+      100%{background-position:0% 50%}
+  }
+  @keyframes skeleton {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 51%}
+      100%{background-position:0% 50%}
+  }
 	.store {
 		.search-bar {
 	    display: block;
@@ -40,25 +55,49 @@ m-becommerce {
       }
     }
     .sections {
+      padding: 0 10px;
       .section-title {
         font-size: 16px;
         letter-spacing: 0;
         padding-top: 10px;
       }
-      padding: 0 10px;
       :nth-child(even) {
         margin-right: 10px;
       }
       .product {
         margin-bottom: 10px;
-        padding: 10px;
         width: ~"calc(50% - 5px)";
         float: left;
         background: #FFFFFF;
         color: #4A4A4A;
-        img {
-          width: 100%;
-        }
+        .skeleton{
+      		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
+      		background-size: 10000% 10000%;
+      		-webkit-animation: skeleton 20.22s ease infinite;
+      		-moz-animation: skeleton 20.22s ease infinite;
+      		animation: skeleton 20.22s ease infinite;
+      	}
+      	.thumb-size{
+      		width: 100%;
+      		height: 30.05vw;
+      		.thumb{
+      			opacity: 0;
+      		}
+      	}
+      	.thumb-size.loaded{
+      		.thumb{
+      			opacity: 1;
+      		}
+      	}
+        .thumb{
+  				width: 100%;
+  				height: 100%;
+  				background-color: #D8D8D8;
+  				background-size: cover;
+  				-webkit-transition: opacity 0.5s ease-out; /* Safari */
+  				transition: opacity 0.5s ease-out;
+          background-position: center;
+  			}
         .name {
           font-size: @product-font-size;
           display: -webkit-box;

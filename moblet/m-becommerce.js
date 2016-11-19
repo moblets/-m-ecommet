@@ -93,13 +93,9 @@ module.exports = {
     // var apiUrl = '';
     var controller = {
       localizeCurrency: function(value) {
-        console.log(value);
         var corrected = $filter('currency')(value, "R$", 2);
-        console.log(corrected);
         var splited = corrected.split('.');
-        console.log(splited);
         var localized = splited[0].replace(',', '.') + '.' + splited[1];
-        console.log(localized);
         return localized;
       },
       /**
@@ -138,9 +134,9 @@ module.exports = {
       /**
        * Show the moblet main view
        * @param {Object} data The data from the instance plus all API URLs
-       * @return {Promise}
+       * @return {Promise} Show the store view when all needed data is loaded
        */
-      showMainView: function(data) {
+      prepareStoreView: function(data) {
         var deferred = $q.defer();
         var finished = 0;
         var totalLoad = 5;
@@ -150,7 +146,7 @@ module.exports = {
           finished += 1;
           if (finished === totalLoad) {
             $scope.sections = sections;
-            deferred.resolve('ok');
+            deferred.resolve();
           }
         };
 
@@ -227,10 +223,9 @@ module.exports = {
         model.setInstanceData()
           .then(function(data) {
             console.debug(instanceData);
-            return controller.showMainView(data);
+            return controller.prepareStoreView(data);
           })
-          .then(function(viewStatus) {
-            console.log(viewStatus);
+          .then(function() {
             $scope.isLoading = false;
           })
           .catch(function(error) {
@@ -239,6 +234,11 @@ module.exports = {
             $scope.error = true;
           });
       }
+    };
+
+    window.malbumImageLoaded = function(element) {
+      console.log(element);
+      element.parentElement.classList.add("loaded");
     };
     controller.init();
   }
