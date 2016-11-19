@@ -12,6 +12,7 @@ module.exports = {
   controller: function(
     $scope,
     $rootScope,
+    $mAppDef,
     $filter,
     $interval,
     $timeout,
@@ -98,6 +99,29 @@ module.exports = {
         var localized = splited[0].replace(',', '.') + '.' + splited[1];
         return localized;
       },
+      loadMoreFromSection: function(section) {
+        section.limit = section.products.length;
+        $scope.isLoading = true;
+        $timeout(function() {
+          $scope.isLoading = false;
+          // Broadcast complete refresh and infinite scroll
+          $rootScope.$broadcast('scroll.refreshComplete');
+          $rootScope.$broadcast('scroll.infiniteScrollComplete');
+        }, 500);
+      },
+      goToProduct: function(productId) {
+        console.log(productId);
+        model.getData($scope.instanceData.detail(productId))
+          .then(function(response) {
+            console.log(response.data);
+            $stateParams.detail = 'product/' + productId;
+            $scope.view = 'product';
+            $state.go('pages', $stateParams);
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      },
       /**
        * Check if the view is showing a detail or the list. The function checks
        * if $stateParams.detail is set.
@@ -136,26 +160,30 @@ module.exports = {
        * @param {Object} data The data from the instance plus all API URLs
        * @return {Promise} Show the store view when all needed data is loaded
        */
-      prepareStoreView: function(data) {
+      prepareStoreView: function() {
         var deferred = $q.defer();
         var finished = 0;
         var totalLoad = 5;
+        var originalSectionsLimit = 4;
         var sections = [];
 
         var finishedLoading = function() {
           finished += 1;
           if (finished === totalLoad) {
+            $scope.view = 'store';
             $scope.sections = sections;
+            $scope.loadMore = controller.loadMoreFromSection;
+            $scope.goToProduct = controller.goToProduct;
+
             deferred.resolve();
           }
         };
 
-        if (isDefined(data)) {
+        if (isDefined($scope.instanceData)) {
           $scope.error = false;
           $scope.emptyData = false;
-          apiUrl = data.apiUrl;
 
-          model.getData(data.store)
+          model.getData($scope.instanceData.store)
             .then(function(response) {
               $scope.store = response.data;
               $scope.categories = response.data.headerJson.headerCategoryJsons;
@@ -165,7 +193,7 @@ module.exports = {
               console.error(error);
             });
 
-          model.getData(data.banner)
+          model.getData($scope.instanceData.banner)
             .then(function(response) {
               $scope.banners = response.data;
               finishedLoading();
@@ -173,10 +201,11 @@ module.exports = {
             .catch(function(error) {
               console.error(error);
             });
-          model.getData(data.sections.section3)
+          model.getData($scope.instanceData.sections.section3)
             .then(function(response) {
               sections[0] = {
                 name: 'Vitrine 1',
+                limit: originalSectionsLimit,
                 products: response.data
               };
               finishedLoading();
@@ -184,10 +213,11 @@ module.exports = {
             .catch(function(error) {
               console.error(error);
             });
-          model.getData(data.sections.section4)
+          model.getData($scope.instanceData.sections.section4)
             .then(function(response) {
               sections[1] = {
                 name: 'Vitrine 2',
+                limit: originalSectionsLimit,
                 products: response.data
               };
               finishedLoading();
@@ -195,10 +225,11 @@ module.exports = {
             .catch(function(error) {
               console.error(error);
             });
-          model.getData(data.sections.section5)
+          model.getData($scope.instanceData.sections.section5)
             .then(function(response) {
               sections[2] = {
                 name: 'Vitrine 3',
+                limit: originalSectionsLimit,
                 products: response.data
               };
               finishedLoading();
@@ -218,26 +249,38 @@ module.exports = {
       },
 
       init: function() {
+        // Set general status
         $scope.isLoading = true;
         $scope.localizeCurrency = controller.localizeCurrency;
-        model.setInstanceData()
-          .then(function(data) {
-            console.debug(instanceData);
-            return controller.prepareStoreView(data);
-          })
-          .then(function() {
-            $scope.isLoading = false;
-          })
-          .catch(function(error) {
-            console.error(error);
-            $scope.isLoading = false;
-            $scope.error = true;
-          });
+        $scope.colors = $mAppDef().load().colors;
+        console.log($stateParams);
+        if ($stateParams.detail === '') {
+          // Load the appDef data
+          model.setInstanceData()
+            .then(function(data) {
+              // Save the instance in the scope
+              $scope.instanceData = data;
+              // Prepare the index (store view)
+              return controller.prepareStoreView();
+            })
+            .then(function() {
+              $scope.isLoading = false;
+            })
+            .catch(function(error) {
+              console.error(error);
+              $scope.isLoading = false;
+              $scope.error = true;
+            });
+        } else {
+          var params = $stateParams.detail.split('/');
+          if (params[0] === 'product') {
+            console.log(params[1]);
+          }
+        }
       }
     };
 
     window.malbumImageLoaded = function(element) {
-      console.log(element);
       element.parentElement.classList.add("loaded");
     };
     controller.init();

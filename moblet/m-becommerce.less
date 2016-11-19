@@ -55,73 +55,94 @@ m-becommerce {
       }
     }
     .sections {
-      padding: 0 10px;
+      padding: 10px;
       .section-title {
         font-size: 16px;
         letter-spacing: 0;
-        padding-top: 10px;
+        padding: 0;
       }
-      :nth-child(even) {
-        margin-right: 10px;
+      .products {
+        display: inline-block;
+        :nth-child(odd) {
+          margin-right: 10px;
+        }
+        .product {
+          margin-bottom: 10px;
+          width: ~"calc(50% - 5px)";
+          float: left;
+          background: #FFFFFF;
+          color: #4A4A4A;
+          .skeleton{
+        		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
+        		background-size: 10000% 10000%;
+        		-webkit-animation: skeleton 20.22s ease infinite;
+        		-moz-animation: skeleton 20.22s ease infinite;
+        		animation: skeleton 20.22s ease infinite;
+        	}
+        	.thumb-size{
+        		width: 100%;
+        		height: 30.05vw;
+        		.thumb{
+        			opacity: 0;
+        		}
+        	}
+        	.thumb-size.loaded{
+        		.thumb{
+        			opacity: 1;
+        		}
+        	}
+          .thumb{
+    				width: 100%;
+    				height: 100%;
+    				background-color: #D8D8D8;
+    				background-size: cover;
+    				-webkit-transition: opacity 0.5s ease-out; /* Safari */
+    				transition: opacity 0.5s ease-out;
+            background-position: center;
+    			}
+          .name {
+            font-size: @product-font-size;
+            display: -webkit-box;
+            -webkit-line-clamp: @product-lines-to-show;
+            -webkit-box-orient: vertical;
+            margin: 10px 0;
+            white-space: normal;
+            height: @product-font-size*@product-line-height*@product-lines-to-show;
+            line-height: @product-line-height;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .value {
+            line-height: 18px;
+            font-weight: bold;
+            padding: 0;
+            margin: 0;
+          }
+          .value-from {
+            font-size: 11px;
+            font-weight: normal;;
+            text-decoration: line-through;
+          }
+          .value-to {
+          }
+        }
       }
-      .product {
-        margin-bottom: 10px;
-        width: ~"calc(50% - 5px)";
-        float: left;
+      .more-products-button {
         background: #FFFFFF;
-        color: #4A4A4A;
-        .skeleton{
-      		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
-      		background-size: 10000% 10000%;
-      		-webkit-animation: skeleton 20.22s ease infinite;
-      		-moz-animation: skeleton 20.22s ease infinite;
-      		animation: skeleton 20.22s ease infinite;
-      	}
-      	.thumb-size{
-      		width: 100%;
-      		height: 30.05vw;
-      		.thumb{
-      			opacity: 0;
-      		}
-      	}
-      	.thumb-size.loaded{
-      		.thumb{
-      			opacity: 1;
-      		}
-      	}
-        .thumb{
-  				width: 100%;
-  				height: 100%;
-  				background-color: #D8D8D8;
-  				background-size: cover;
-  				-webkit-transition: opacity 0.5s ease-out; /* Safari */
-  				transition: opacity 0.5s ease-out;
-          background-position: center;
-  			}
-        .name {
-          font-size: @product-font-size;
-          display: -webkit-box;
-          -webkit-line-clamp: @product-lines-to-show;
-          -webkit-box-orient: vertical;
-          margin: 10px 0;
-          white-space: normal;
-          height: @product-font-size*@product-line-height*@product-lines-to-show;
-          line-height: @product-line-height;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .value {
-          line-height: 18px;
-          font-weight: bold;
-          padding: 0;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 2px;
+        font-size: 14px;
+        letter-spacing: 0;
+        text-align: center;
+        height: 46px;
+        padding: 13px;
+        p {
           margin: 0;
+          padding: 0;
         }
-        .value-from {
-          font-size: 11px;
-          font-weight: normal;;
-          text-decoration: line-through;
-        }
-        .value-to {
+        :active {
+
         }
       }
     }

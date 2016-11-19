@@ -1,6 +1,14 @@
 <m-moblet init="init"  is-loading="isLoading" inner-scroll="true" no-content="noContent" unavaliable="error">
-  <m-content reload="load" more="more" >
-    <div class="store">
+  <m-content>
+    <style>
+      .more-products-button {
+        border-color: {{ colors.header_color }};
+      }
+    </style>
+    <!-- STORE VIEW (MAIN) -->
+    <div
+      class="store"
+      ng-if="view === 'store'">
       <!-- SEARCH BAR -->
 			<div class="search-bar m-theme-bar-top">
 				<input class="search-input" type="search" ng-model="search" name="products" placeholder="Buscar">
@@ -14,52 +22,74 @@
         <img ng-src="{{ banners[0].image }}" alt="{{ banners[0].alt }}" class="store-banner"/>
       </div>
       <!-- SECTIONS -->
-      <div class="sections" ng-repeat="section in sections">
+      <div
+        class="sections"
+        ng-if="section.products.length > 0"
+        ng-repeat="(i, section) in sections">
         <h1 class="section-title m-theme-text-color"
             ng-if="section.products.length > 0"
             ng-bind="section.name">
         </h1>
-        <div
-          class="product"
-          ng-repeat="product in section.products"
-          ng-if="section.products.length > 0"
-          >
-            <div class="skeleton thumb-size">
-              <div
-                id="img-{{ product.id }}"
-                class="thumb"
-                ng-style="{'background-image':'url({{ product.thumbnail }})'}">
+        <!-- PRODUCTS -->
+        <div class="products">
+          <div
+            ng-repeat="product in section.products | limitTo: section.limit"
+            class="product"
+            ng-if="section.products.length > 0"
+            ng-click="goToProduct(product.id)"
+            >
+              <!-- PRODUCT IMAGE -->
+              <div class="skeleton thumb-size">
+                <div
+                  id="img-{{ product.id }}"
+                  class="thumb"
+                  ng-style="{'background-image':'url({{ product.thumbnail }})'}">
+                </div>
+                <img
+                  id="control-img-{{ product.id }}"
+                  image-id="{{ product.id }}"
+                  onload="malbumImageLoaded(this)"
+                  ng-src="{{ product.thumbnail }}"
+                  style="display:none" />
               </div>
-              <img
-                id="control-img-{{ product.id }}"
-                image-id="{{ product.id }}"
-                onload="malbumImageLoaded(this)"
-                ng-src="{{ product.thumbnail }}"
-                style="display:none" />
-            </div>
-            <!-- <img src="{{ product.thumbnail }}" alt="{{ product.id }}-{{ product.name }}" /> -->
-            <p class="name">{{ product.name }}</p>
-            <p
-              ng-if="product.valueFrom && product.valueFrom > product.valueTo"
-              class="value value-from">
-              {{ localizeCurrency(product.valueFrom) }}
-            </p>
-            <p
-              ng-if="product.valueFrom && product.valueFrom > product.valueTo"
-              class="value value-to m-theme-text-color">
-              {{ localizeCurrency(product.valueTo) }}
-            </p>
-            <p
-              ng-if="!product.valueFrom || product.valueFrom <= product.valueTo"
-              class="value m-theme-text-color">
-              {{ localizeCurrency(product.valueTo) }}
-            </p>
+              <!-- PRODUCT NAME -->
+              <p class="name">{{ product.name }}</p>
+              <!-- PRODUCT PRICE -->
+              <p
+                ng-if="product.valueFrom && product.valueFrom > product.valueTo"
+                class="value value-from">
+                {{ localizeCurrency(product.valueFrom) }}
+              </p>
+              <p
+                ng-if="product.valueFrom && product.valueFrom > product.valueTo"
+                class="value value-to m-theme-text-color">
+                {{ localizeCurrency(product.valueTo) }}
+              </p>
+              <p
+                ng-if="!product.valueFrom || product.valueFrom <= product.valueTo"
+                class="value m-theme-text-color">
+                {{ localizeCurrency(product.valueTo) }}
+              </p>
+          </div>
+        </div>
+        <!-- MORE BUTTON -->
+        <div
+          class="more-products-button"
+          ng-if="section.products.length > 0 &&
+                 section.limit < section.products.length"
+          ng-click="loadMore(section)">
+          <p class="m-theme-text-color">
+            ver mais
+          </p>
         </div>
       </div>
     </div>
-    <!-- Detail -->
-    <div class="detail m-theme-null-background {{ itemStyle }}" ng-if="isDetail">
-      <img class="full-width-image" ng-src="{{ detail.image }}">
+    <!-- PRODUCT VIEW -->
+    <div
+      class="detail m-theme-null-background {{ itemStyle }}"
+      ng-if="view === 'product'">
+      E AE?
+      <img class="full-width-image" ng-src="{{ product.image }}">
       <div class="detail-container">
         <h1 class="title" ng-bind="detail.title"></h1>
         <div class="description" m-bind-html="detail.description"></div>
