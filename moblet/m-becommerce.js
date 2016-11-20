@@ -225,32 +225,28 @@ module.exports = {
           $scope.colors = $mAppDef().load().colors;
           $scope.localizeCurrency = helpers.localizeCurrency;
 
+          var detail = $stateParams.detail.split('&');
+          $scope.view = detail[0] === '' ? page.STORE : detail[0];
+          $stateParams.detail = detail[1] === undefined ? '' : detail[1];
+
           // Decide where to go based on the $stateParams
-          if ($stateParams.detail === '') {
-            console.debug('STORE');
-            // Set the view
-            $scope.view = page.STORE;
-            // Show the store view
+          if ($scope.view === page.STORE) {
+            /** STORE PAGE **/
             storeController.showView();
-          } else {
-            var detail = $stateParams.detail.split('&');
-            $scope.view = detail[0];
-            $stateParams.detail = detail[1];
-            if ($scope.view === page.CATEGORY) {
-              /** PRODUCT PAGE **/
-              console.debug('CATEGORY');
-            } else if ($scope.view === page.SUBCATEGORY) {
-              /** CATEGORY PAGE **/
-              console.debug('SUBCATEGORY');
-            } else if ($scope.view === page.PRODUCT) {
-              /** SUBCATEGORY PAGE **/
-              console.debug('PRODUCT');
-              $scope.productId = $stateParams.detail;
-              $scope.isLoading = false;
-            } else if ($scope.view === page.CART) {
-              /** CART PAGE **/
-              console.debug('CART');
-            }
+          } else if ($scope.view === page.CATEGORY) {
+            /** PRODUCT PAGE **/
+            console.debug('CATEGORY');
+          } else if ($scope.view === page.SUBCATEGORY) {
+            /** CATEGORY PAGE **/
+            console.debug('SUBCATEGORY');
+          } else if ($scope.view === page.PRODUCT) {
+            /** SUBCATEGORY PAGE **/
+            console.debug('PRODUCT');
+            $scope.productId = $stateParams.detail;
+            $scope.isLoading = false;
+          } else if ($scope.view === page.CART) {
+            /** CART PAGE **/
+            console.debug('CART');
           }
         })
         .catch(function(err) {
