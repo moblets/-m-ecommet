@@ -220,47 +220,47 @@ module.exports = {
         return deferred.promise;
       }
     };
-    var router = {
-      init: function() {
-        console.debug('router.init()');
-        // Set general status
-        $scope.isLoading = true;
-        $scope.localizeCurrency = helpers.localizeCurrency;
-        $scope.colors = $mAppDef().load().colors;
-        // Decide where to go based on the $stateParams
-        if ($stateParams.detail === '') {
-          console.debug('STORE');
-          /** STORE PAGE **/
-          // Load the appDef data
-          model.loadInstanceData()
-            .then(function() {
-              // Prepare the store view
-              return storeController.showView();
-            })
-            .catch(function(error) {
-              console.error(error);
-              $scope.isLoading = false;
-              $scope.error = true;
-            });
-        } else {
-          var detail = $stateParams.detail.split('&');
-          $scope.view = detail[0];
-          $stateParams.detail = detail[1];
-          if ($scope.view === page.CATEGORY) {
-            /** PRODUCT PAGE **/
-            console.debug('CATEGORY');
-          } else if ($scope.view === page.SUBCATEGORY) {
-            /** CATEGORY PAGE **/
-            console.debug('SUBCATEGORY');
-          } else if ($scope.view === page.PRODUCT) {
-            /** SUBCATEGORY PAGE **/
-            console.debug('PRODUCT');
-            $scope.productId = $stateParams.detail;
+
+    var router = function() {
+      console.debug('router()');
+      // Set general status
+      $scope.isLoading = true;
+      $scope.localizeCurrency = helpers.localizeCurrency;
+      $scope.colors = $mAppDef().load().colors;
+
+      // Decide where to go based on the $stateParams
+      if ($stateParams.detail === '') {
+        console.debug('STORE');
+        /** STORE PAGE **/
+        // Load the appDef data
+        model.loadInstanceData()
+          .then(function() {
+            // Show the store view
+            return storeController.showView();
+          })
+          .catch(function(error) {
+            console.error(error);
             $scope.isLoading = false;
-          } else if ($scope.view === page.CART) {
-            /** CART PAGE **/
-            console.debug('CART');
-          }
+            $scope.error = true;
+          });
+      } else {
+        var detail = $stateParams.detail.split('&');
+        $scope.view = detail[0];
+        $stateParams.detail = detail[1];
+        if ($scope.view === page.CATEGORY) {
+          /** PRODUCT PAGE **/
+          console.debug('CATEGORY');
+        } else if ($scope.view === page.SUBCATEGORY) {
+          /** CATEGORY PAGE **/
+          console.debug('SUBCATEGORY');
+        } else if ($scope.view === page.PRODUCT) {
+          /** SUBCATEGORY PAGE **/
+          console.debug('PRODUCT');
+          $scope.productId = $stateParams.detail;
+          $scope.isLoading = false;
+        } else if ($scope.view === page.CART) {
+          /** CART PAGE **/
+          console.debug('CART');
         }
       }
     };
@@ -268,6 +268,6 @@ module.exports = {
     window.malbumImageLoaded = function(element) {
       element.parentElement.classList.add("loaded");
     };
-    router.init();
+    router();
   }
 };
