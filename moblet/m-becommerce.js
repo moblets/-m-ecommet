@@ -141,7 +141,7 @@ module.exports = {
               $scope.goToProduct = storeController.goToProduct;
               // Set error and emptData to false
               $scope.error = false;
-              $scope.emptyData = false;
+              $scope.noContent = false;
 
               // Remove the loader
               $scope.isLoading = false;
@@ -212,9 +212,9 @@ module.exports = {
           $scope.isLoading = false;
 
           $scope.error = true;
-          $scope.emptyData = true;
+          $scope.noContent = true;
 
-          deferred.resolve();
+          deferred.reject();
         }
 
         return deferred.promise;
@@ -225,18 +225,20 @@ module.exports = {
       console.debug('router()');
       // Set general status
       $scope.isLoading = true;
-      $scope.localizeCurrency = helpers.localizeCurrency;
       $scope.colors = $mAppDef().load().colors;
+      // Make the general helper functions avalable in the scope
+      $scope.localizeCurrency = helpers.localizeCurrency;
 
       // Decide where to go based on the $stateParams
       if ($stateParams.detail === '') {
         console.debug('STORE');
         /** STORE PAGE **/
         // Load the appDef data
+        // TODO Put this in the top, outside the store view
         model.loadInstanceData()
           .then(function() {
             // Show the store view
-            return storeController.showView();
+            storeController.showView();
           })
           .catch(function(error) {
             console.error(error);
