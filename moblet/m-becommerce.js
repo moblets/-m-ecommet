@@ -164,8 +164,8 @@ module.exports = {
             $scope.categories = response.data.headerJson.headerCategoryJsons;
             finishedLoading();
           })
-          .catch(function(error) {
-            console.error(error);
+          .catch(function(err) {
+            helpers.error(err);
           });
 
         appModel.getData($scope.instanceData.banner)
@@ -173,8 +173,8 @@ module.exports = {
             $scope.banners = response.data;
             finishedLoading();
           })
-          .catch(function(error) {
-            console.error(error);
+          .catch(function(err) {
+            helpers.error(err);
           });
         appModel.getData($scope.instanceData.sections.section3)
           .then(function(response) {
@@ -187,7 +187,6 @@ module.exports = {
           })
           .catch(function(err) {
             helpers.error(err);
-            console.error(err);
           });
         appModel.getData($scope.instanceData.sections.section4)
           .then(function(response) {
@@ -199,7 +198,7 @@ module.exports = {
             finishedLoading();
           })
           .catch(function(err) {
-            console.error(err);
+            helpers.error(err);
           });
         appModel.getData($scope.instanceData.sections.section5)
           .then(function(response) {
@@ -211,7 +210,7 @@ module.exports = {
             finishedLoading();
           })
           .catch(function(err) {
-            console.error(err);
+            helpers.error(err);
           });
       }
     };
