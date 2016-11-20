@@ -89,11 +89,12 @@
       class="detail m-theme-null-background {{ itemStyle }}"
       ng-if="view === 'product'">
       E AE?
-      <img class="full-width-image" ng-src="{{ product.image }}">
+      {{ productId }}
+      <!-- <img class="full-width-image" ng-src="{{ product.image }}">
       <div class="detail-container">
         <h1 class="title" ng-bind="detail.title"></h1>
         <div class="description" m-bind-html="detail.description"></div>
-      </div>
+      </div> -->
     </div>
   </m-content>
 </m-moblet>
