@@ -22,6 +22,10 @@ module.exports = {
     $http,
     $q
   ) {
+    window.malbumImageLoaded = function(element) {
+      element.parentElement.classList.add("loaded");
+    };
+
     var page = {
       STORE: 'store',
       CATEGORY: 'category',
@@ -29,11 +33,26 @@ module.exports = {
       PRODUCT: 'product',
       CART: 'cart'
     };
-    var model = {
+
+    var helpers = {
+      error: function() {
+        $scope.isLoading = false;
+        $scope.error = true;
+        $scope.noContent = true;
+      },
+      localizeCurrency: function(value) {
+        var corrected = $filter('currency')(value, "R$", 2);
+        var splited = corrected.split('.');
+        var localized = splited[0].replace(',', '.') + '.' + splited[1];
+        return localized;
+      }
+    };
+
+    var appModel = {
       loadInstanceData: function() {
         var deferred = $q.defer();
         var dataLoadOptions = {
-          cache: false
+          cache: ($stateParams.detail !== "")
         };
 
         $mDataLoader.load($scope.moblet, dataLoadOptions)
@@ -64,9 +83,9 @@ module.exports = {
             };
             deferred.resolve();
           })
-          .catch(function(error) {
-            console.error(error);
-            deferred.reject('no data found');
+          .catch(function(err) {
+            helpers.error(err);
+            deferred.reject(err);
           });
         return deferred.promise;
       },
@@ -77,22 +96,15 @@ module.exports = {
             function(response) {
               deferred.resolve(response);
             },
-            function(error) {
-              console.error(error);
-              deferred.reject(error);
+            function(err) {
+              helpers.error(err);
+              deferred.reject(err);
             }
         );
         return deferred.promise;
       }
     };
-    var helpers = {
-      localizeCurrency: function(value) {
-        var corrected = $filter('currency')(value, "R$", 2);
-        var splited = corrected.split('.');
-        var localized = splited[0].replace(',', '.') + '.' + splited[1];
-        return localized;
-      }
-    };
+
     var storeController = {
       loadMoreFromSection: function(section) {
         section.limit = section.products.length;
@@ -106,118 +118,101 @@ module.exports = {
       },
       goToProduct: function(productId) {
         console.log(productId);
-        model.getData($scope.instanceData.detail(productId))
+        appModel.getData($scope.instanceData.detail(productId))
           .then(function(response) {
             console.log(response.data);
             $stateParams.detail = page.PRODUCT + '&' + productId;
             $state.go('pages', $stateParams);
           })
-          .catch(function(error) {
-            console.error(error);
+          .catch(function(err) {
+            helpers.error(err);
+            console.error(err);
           });
       },
       /**
        * Show the moblet main view
-       * @param {Object} data The data from the instance plus all API URLs
-       * @return {Promise} Show the store view when all needed data is loaded
        */
       showView: function() {
-        var deferred = $q.defer();
+        $scope.sections = [];
 
-        if (isDefined($scope.instanceData)) {
-          $scope.sections = [];
+        var finished = 0;
+        var totalLoad = 5;
+        var sectionLimit = 4;
 
-          var finished = 0;
-          var totalLoad = 5;
-          var sectionLimit = 4;
+        var finishedLoading = function() {
+          finished += 1;
+          if (finished === totalLoad) {
+            // Set the STORE functions
+            $scope.loadMore = storeController.loadMoreFromSection;
+            $scope.goToProduct = storeController.goToProduct;
+            // Set error and emptData to false
+            $scope.error = false;
+            $scope.noContent = false;
 
-          var finishedLoading = function() {
-            finished += 1;
-            if (finished === totalLoad) {
-              // Set the view
-              $scope.view = page.STORE;
-              // Set the STORE functions
-              $scope.loadMore = storeController.loadMoreFromSection;
-              $scope.goToProduct = storeController.goToProduct;
-              // Set error and emptData to false
-              $scope.error = false;
-              $scope.noContent = false;
+            // Remove the loader
+            $scope.isLoading = false;
 
-              // Remove the loader
-              $scope.isLoading = false;
+            // Broadcast complete refresh and infinite scroll
+            $rootScope.$broadcast('scroll.refreshComplete');
+            $rootScope.$broadcast('scroll.infiniteScrollComplete');
+          }
+        };
 
-              // Broadcast complete refresh and infinite scroll
-              $rootScope.$broadcast('scroll.refreshComplete');
-              $rootScope.$broadcast('scroll.infiniteScrollComplete');
+        appModel.getData($scope.instanceData.store)
+          .then(function(response) {
+            $scope.store = response.data;
+            $scope.categories = response.data.headerJson.headerCategoryJsons;
+            finishedLoading();
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
 
-              deferred.resolve();
-            }
-          };
-
-          model.getData($scope.instanceData.store)
-            .then(function(response) {
-              $scope.store = response.data;
-              $scope.categories = response.data.headerJson.headerCategoryJsons;
-              finishedLoading();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
-
-          model.getData($scope.instanceData.banner)
-            .then(function(response) {
-              $scope.banners = response.data;
-              finishedLoading();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
-          model.getData($scope.instanceData.sections.section3)
-            .then(function(response) {
-              $scope.sections[0] = {
-                name: 'Vitrine 1',
-                limit: sectionLimit,
-                products: response.data
-              };
-              finishedLoading();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
-          model.getData($scope.instanceData.sections.section4)
-            .then(function(response) {
-              $scope.sections[1] = {
-                name: 'Vitrine 2',
-                limit: sectionLimit,
-                products: response.data
-              };
-              finishedLoading();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
-          model.getData($scope.instanceData.sections.section5)
-            .then(function(response) {
-              $scope.sections[2] = {
-                name: 'Vitrine 3',
-                limit: sectionLimit,
-                products: response.data
-              };
-              finishedLoading();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
-        } else {
-          $scope.isLoading = false;
-
-          $scope.error = true;
-          $scope.noContent = true;
-
-          deferred.reject();
-        }
-
-        return deferred.promise;
+        appModel.getData($scope.instanceData.banner)
+          .then(function(response) {
+            $scope.banners = response.data;
+            finishedLoading();
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+        appModel.getData($scope.instanceData.sections.section3)
+          .then(function(response) {
+            $scope.sections[0] = {
+              name: 'Vitrine 1',
+              limit: sectionLimit,
+              products: response.data
+            };
+            finishedLoading();
+          })
+          .catch(function(err) {
+            helpers.error(err);
+            console.error(err);
+          });
+        appModel.getData($scope.instanceData.sections.section4)
+          .then(function(response) {
+            $scope.sections[1] = {
+              name: 'Vitrine 2',
+              limit: sectionLimit,
+              products: response.data
+            };
+            finishedLoading();
+          })
+          .catch(function(err) {
+            console.error(err);
+          });
+        appModel.getData($scope.instanceData.sections.section5)
+          .then(function(response) {
+            $scope.sections[2] = {
+              name: 'Vitrine 3',
+              limit: sectionLimit,
+              products: response.data
+            };
+            finishedLoading();
+          })
+          .catch(function(err) {
+            console.error(err);
+          });
       }
     };
 
@@ -225,51 +220,45 @@ module.exports = {
       console.debug('router()');
       // Set general status
       $scope.isLoading = true;
-      $scope.colors = $mAppDef().load().colors;
-      // Make the general helper functions avalable in the scope
-      $scope.localizeCurrency = helpers.localizeCurrency;
+      appModel.loadInstanceData()
+        .then(function() {
+          // Make the general functions avalable in the scope
+          $scope.colors = $mAppDef().load().colors;
+          $scope.localizeCurrency = helpers.localizeCurrency;
 
-      // Decide where to go based on the $stateParams
-      if ($stateParams.detail === '') {
-        console.debug('STORE');
-        /** STORE PAGE **/
-        // Load the appDef data
-        // TODO Put this in the top, outside the store view
-        model.loadInstanceData()
-          .then(function() {
+          // Decide where to go based on the $stateParams
+          if ($stateParams.detail === '') {
+            console.debug('STORE');
+            // Set the view
+            $scope.view = page.STORE;
             // Show the store view
             storeController.showView();
-          })
-          .catch(function(error) {
-            console.error(error);
-            $scope.isLoading = false;
-            $scope.error = true;
-          });
-      } else {
-        var detail = $stateParams.detail.split('&');
-        $scope.view = detail[0];
-        $stateParams.detail = detail[1];
-        if ($scope.view === page.CATEGORY) {
-          /** PRODUCT PAGE **/
-          console.debug('CATEGORY');
-        } else if ($scope.view === page.SUBCATEGORY) {
-          /** CATEGORY PAGE **/
-          console.debug('SUBCATEGORY');
-        } else if ($scope.view === page.PRODUCT) {
-          /** SUBCATEGORY PAGE **/
-          console.debug('PRODUCT');
-          $scope.productId = $stateParams.detail;
-          $scope.isLoading = false;
-        } else if ($scope.view === page.CART) {
-          /** CART PAGE **/
-          console.debug('CART');
-        }
-      }
+          } else {
+            var detail = $stateParams.detail.split('&');
+            $scope.view = detail[0];
+            $stateParams.detail = detail[1];
+            if ($scope.view === page.CATEGORY) {
+              /** PRODUCT PAGE **/
+              console.debug('CATEGORY');
+            } else if ($scope.view === page.SUBCATEGORY) {
+              /** CATEGORY PAGE **/
+              console.debug('SUBCATEGORY');
+            } else if ($scope.view === page.PRODUCT) {
+              /** SUBCATEGORY PAGE **/
+              console.debug('PRODUCT');
+              $scope.productId = $stateParams.detail;
+              $scope.isLoading = false;
+            } else if ($scope.view === page.CART) {
+              /** CART PAGE **/
+              console.debug('CART');
+            }
+          }
+        })
+        .catch(function(err) {
+          helpers.error(err);
+        });
     };
 
-    window.malbumImageLoaded = function(element) {
-      element.parentElement.classList.add("loaded");
-    };
     router();
   }
 };
