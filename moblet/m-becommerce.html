@@ -1,4 +1,10 @@
-<m-moblet init="router"  is-loading="isLoading" inner-scroll="true" no-content="noContent" unavaliable="error">
+<m-moblet
+init="router"
+is-loading="isLoading"
+inner-scroll="true"
+no-content="noContent"
+unavaliable="error"
+>
   <m-content>
     <style>
       .more-products-button {
@@ -7,7 +13,7 @@
     </style>
     <!-- STORE VIEW (MAIN) -->
     <div
-      class="store"
+      class="store m-theme-null-background"
       ng-if="view === 'store'">
       <!-- SEARCH BAR -->
 			<div class="search-bar m-theme-bar-top">

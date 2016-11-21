@@ -55,23 +55,32 @@ m-becommerce {
       }
     }
     .sections {
-      padding: 10px;
-      .section-title {
+      padding: 3vw;
+      h1.section-title {
         font-size: 16px;
+        margin-bottom: 3vw;
         letter-spacing: 0;
         padding: 0;
       }
       .products {
         display: inline-block;
-        :nth-child(odd) {
-          margin-right: 10px;
+        :nth-child(1).product, :nth-child(2).product {
+          border-top: none;
+        }
+        :nth-child(odd).product {
+          padding-right: 3vw;
+          border-right: 1px solid #EDEDED;
+        }
+        :nth-child(even).product {
+          padding-left: 3vw;
         }
         .product {
-          margin-bottom: 10px;
-          width: ~"calc(50% - 5px)";
+          width: 47vw;
           float: left;
           background: #FFFFFF;
           color: #4A4A4A;
+          padding: 3vw 0 3vw 0;
+          border-top: 1px solid #EDEDED;
           .skeleton{
         		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
         		background-size: 10000% 10000%;
@@ -80,21 +89,25 @@ m-becommerce {
         		animation: skeleton 20.22s ease infinite;
         	}
         	.thumb-size{
-        		width: 100%;
-        		height: 30.05vw;
+            width: 44vw;
+            height: 30.75vw;
+            margin: 2vw 0px;
+            padding: 0;
         		.thumb{
         			opacity: 0;
         		}
         	}
         	.thumb-size.loaded{
         		.thumb{
+              background-size: contain;
+              background-repeat: no-repeat;
         			opacity: 1;
         		}
         	}
           .thumb{
     				width: 100%;
     				height: 100%;
-    				background-color: #D8D8D8;
+    				background-color: #FFFFFF;
     				background-size: cover;
     				-webkit-transition: opacity 0.5s ease-out; /* Safari */
     				transition: opacity 0.5s ease-out;
@@ -102,17 +115,19 @@ m-becommerce {
     			}
           .name {
             font-size: @product-font-size;
+            width: 44vw;
             display: -webkit-box;
             -webkit-line-clamp: @product-lines-to-show;
             -webkit-box-orient: vertical;
-            margin: 10px 0;
             white-space: normal;
             height: @product-font-size*@product-line-height*@product-lines-to-show;
             line-height: @product-line-height;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-bottom: 2vw;
           }
           .value {
+            font-size: 13px;
             line-height: 18px;
             font-weight: bold;
             padding: 0;
@@ -120,6 +135,7 @@ m-becommerce {
           }
           .value-from {
             font-size: 11px;
+            line-height: 16px;
             font-weight: normal;;
             text-decoration: line-through;
           }
@@ -136,7 +152,8 @@ m-becommerce {
         letter-spacing: 0;
         text-align: center;
         height: 46px;
-        padding: 13px;
+        padding: 3vw;
+        margin-top: 3vw;
         p {
           margin: 0;
           padding: 0;
