@@ -16,6 +16,7 @@ module.exports = {
     $filter,
     $interval,
     $timeout,
+    $ionicScrollDelegate,
     $state,
     $stateParams,
     $mDataLoader,
@@ -108,13 +109,8 @@ module.exports = {
     var storeController = {
       loadMoreFromSection: function(section) {
         section.limit = section.products.length;
-        $scope.isLoading = true;
-        $timeout(function() {
-          $scope.isLoading = false;
-          // Broadcast complete refresh and infinite scroll
-          $rootScope.$broadcast('scroll.refreshComplete');
-          $rootScope.$broadcast('scroll.infiniteScrollComplete');
-        }, 500);
+        // Resize the scroll
+        $ionicScrollDelegate.resize();
       },
       goToProduct: function(productId) {
         console.log(productId);
@@ -151,10 +147,6 @@ module.exports = {
 
             // Remove the loader
             $scope.isLoading = false;
-
-            // Broadcast complete refresh and infinite scroll
-            $rootScope.$broadcast('scroll.refreshComplete');
-            $rootScope.$broadcast('scroll.infiniteScrollComplete');
           }
         };
 

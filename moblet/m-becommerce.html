@@ -6,11 +6,6 @@ no-content="noContent"
 unavaliable="error"
 >
   <m-content>
-    <style>
-      .more-products-button {
-        border-color: {{ colors.header_color }};
-      }
-    </style>
     <!-- STORE VIEW (MAIN) -->
     <div
       class="store m-theme-null-background"
@@ -103,7 +98,8 @@ unavaliable="error"
           class="more-products-button"
           ng-if="section.products.length > 0 &&
                  section.limit < section.products.length"
-          ng-click="loadMore(section)">
+          ng-click="loadMore(section)"
+          >
           <p class="m-theme-text-color">
             ver mais
           </p>
@@ -113,7 +109,8 @@ unavaliable="error"
     <!-- PRODUCT VIEW -->
     <div
       class="detail m-theme-null-background {{ itemStyle }}"
-      ng-if="view === 'product'">
+      ng-if="view === 'product'"
+      >
       E AE?
       {{ productId }}
       <!-- <img class="full-width-image" ng-src="{{ product.image }}">
