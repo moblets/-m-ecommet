@@ -1,8 +1,10 @@
 m-becommerce {
   @color-grey: #EDEDED;
+  @color-dark-grey: #4A4A4A;
   @product-font-size: 13px;
   @product-line-height: 1.4;
   @product-lines-to-show: 2;
+  // Animations
   @-webkit-keyframes skeleton {
     0%{background-position:0% 50%}
     50%{background-position:100% 51%}
@@ -63,8 +65,13 @@ m-becommerce {
       	display: block;
       }
     }
+    // Don't add the bottom border in the last section
+    :nth-last-child(1).sections {
+      border-bottom: none;
+    }
     .sections {
       padding: 3vw;
+      border-bottom: 3vw solid @color-grey;
       h1.section-title {
         font-size: 16px;
         margin-bottom: 3vw;
@@ -74,18 +81,22 @@ m-becommerce {
       .products {
         display: block;
         overflow: auto;
+        // Left products
         :nth-child(odd).product {
           padding-right: 3vw;
           border-right: 1px solid @color-grey;
           animation-name: new-product-left;
         }
+        // Right products
         :nth-child(even).product {
           padding-left: 3vw;
           animation-name: new-product-right;
         }
+        // 'Single' last right product
         :nth-child(even):nth-last-child(2).product {
           border-bottom: 1px solid @color-grey;
         }
+        // Last row products
         :nth-last-child(1).product, :nth-last-child(2).product {
           border-bottom: none;
         }
@@ -94,7 +105,7 @@ m-becommerce {
           height: 62vw;
           float: left;
           background: #FFFFFF;
-          color: #4A4A4A;
+          color: @color-dark-grey;
           padding: 3vw 0 3vw 0;
           border-bottom: 1px solid @color-grey;
           animation-duration: .3s;
@@ -166,11 +177,12 @@ m-becommerce {
         font-size: 14px;
         letter-spacing: 0;
         text-align: center;
-        height: 46px;
-        padding: 3vw;
+        height: 9vw;
+        padding: 3vw 3vw 0 3vw;
         p {
           margin: 0;
           padding: 0;
+          color: @color-dark-grey;
         }
         :active {
 
