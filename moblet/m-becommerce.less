@@ -64,9 +64,6 @@ m-becommerce {
       }
       .products {
         display: inline-block;
-        :nth-child(1).product, :nth-child(2).product {
-          border-top: none;
-        }
         :nth-child(odd).product {
           padding-right: 3vw;
           border-right: 1px solid #EDEDED;
@@ -74,13 +71,20 @@ m-becommerce {
         :nth-child(even).product {
           padding-left: 3vw;
         }
+        :nth-child(even):nth-last-child(2).product {
+          border-bottom: 1px solid #EDEDED;
+        }
+        :nth-last-child(1).product, :nth-last-child(2).product {
+          border-bottom: none;
+        }
         .product {
           width: 47vw;
+          height: 62vw;
           float: left;
           background: #FFFFFF;
           color: #4A4A4A;
           padding: 3vw 0 3vw 0;
-          border-top: 1px solid #EDEDED;
+          border-bottom: 1px solid #EDEDED;
           .skeleton{
         		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
         		background-size: 10000% 10000%;

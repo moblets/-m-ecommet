@@ -51,40 +51,49 @@ unavaliable="error"
         <div class="products">
           <div
             ng-repeat="product in section.products | limitTo: section.limit"
-            class="product"
             ng-if="section.products.length > 0"
             ng-click="goToProduct(product.id)"
+            class="product"
             >
               <!-- PRODUCT IMAGE -->
               <div class="skeleton thumb-size">
                 <div
-                  id="img-{{ product.id }}"
-                  class="thumb"
-                  ng-style="{'background-image':'url({{ product.thumbnail }})'}">
-                </div>
+                id="img-{{ product.id }}"
+                class="thumb"
+                ng-style="{'background-image':'url({{ product.thumbnail }})'}"
+                ></div>
                 <img
-                  id="control-img-{{ product.id }}"
-                  image-id="{{ product.id }}"
-                  onload="malbumImageLoaded(this)"
-                  ng-src="{{ product.thumbnail }}"
-                  style="display:none" />
+                ng-src="{{ product.thumbnail }}"
+                onload="malbumImageLoaded(this)"
+                id="control-img-{{ product.id }}"
+                image-id="{{ product.id }}"
+                style="display:none"
+                />
               </div>
               <!-- PRODUCT NAME -->
-              <p class="name">{{ product.name }}</p>
+              <p class="name">
+                {{ product.name }}
+              </p>
               <!-- PRODUCT PRICE -->
               <p
-                ng-if="product.valueFrom && product.valueFrom > product.valueTo"
-                class="value value-from">
-                {{ localizeCurrency(product.valueFrom) }}
+              ng-if="product.valueFrom &&
+                     product.valueFrom > product.valueTo"
+              class="value value-from"
+              >
+              {{ localizeCurrency(product.valueFrom) }}
               </p>
               <p
-                ng-if="product.valueFrom && product.valueFrom > product.valueTo"
-                class="value value-to m-theme-text-color">
+              ng-if="product.valueFrom &&
+                     product.valueFrom > product.valueTo"
+              class="value value-to m-theme-text-color"
+              >
                 {{ localizeCurrency(product.valueTo) }}
               </p>
               <p
-                ng-if="!product.valueFrom || product.valueFrom <= product.valueTo"
-                class="value m-theme-text-color">
+              ng-if="!product.valueFrom ||
+                     product.valueFrom <= product.valueTo"
+              class="value m-theme-text-color"
+              >
                 {{ localizeCurrency(product.valueTo) }}
               </p>
           </div>
