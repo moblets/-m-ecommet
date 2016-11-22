@@ -81,7 +81,6 @@ module.exports = {
       scrollToId: function(id) {
         var top = document.getElementById(id).offsetTop;
         $ionicScrollDelegate.scrollTo(0, top, true);
-        $ionicScrollDelegate.resize();
       }
     };
 
@@ -175,20 +174,24 @@ module.exports = {
        * @param  {Object} section The section object with it's products
        */
       loadMoreFromSection: function(section, sectionIndex) {
-        section.limit = section.products.length;
-
-        // Scroll and resize
+        // First, scroll to position
         helpers.scrollToId('section-' + sectionIndex + '-product-3');
+        // Change the list size
+        section.limit = section.products.length;
+        // Resize scroll
+        $ionicScrollDelegate.resize();
       },
       /**
        * Change the banners ng-repeat limit to show all banners
        */
       bannersLimitSwap: function() {
+        // First, change the list size
         $scope.bannersLimit = $scope.bannersLimit === 1 ?
           $scope.banners.length :
           1;
-
-        // Scroll and resize
+        // Resize scroll
+        $ionicScrollDelegate.resize();
+        // Scroll to position
         helpers.scrollToId('banner-container');
       },
 
