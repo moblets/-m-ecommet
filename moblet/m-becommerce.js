@@ -39,6 +39,11 @@ module.exports = {
       CART: 'cart'
     };
 
+    var menuButton = {
+      HOME: 'home',
+      CATEGORIES: 'categories'
+    };
+
     var platform = {
       ANDROID: 'android',
       IOS: 'ios'
@@ -211,6 +216,7 @@ module.exports = {
             // Set the STORE functions
             $scope.loadMoreFromSection = storeController.loadMoreFromSection;
             $scope.bannersLimitSwap = storeController.bannersLimitSwap;
+            $scope.selected = menuButton.HOME;
 
             // Set error and emptData to false
             $scope.error = false;
@@ -301,6 +307,7 @@ module.exports = {
           // Make the general functions avalable in the scope
           $scope.colors = helpers.colors();
           $scope.page = page;
+          $scope.menuButton = menuButton;
           $scope.localizeCurrency = helpers.localizeCurrency;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :
