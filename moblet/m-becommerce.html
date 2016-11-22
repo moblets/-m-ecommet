@@ -6,12 +6,17 @@ no-content="noContent"
 unavaliable="error"
 >
   <m-content>
+    <style>
+      m-becommerce .store .android .store-menu .selected {
+        border-bottom-color: {{ colors.darker}}!important;
+      }
+    </style>
     <!-- STORE VIEW (MAIN) -->
     <div
       class="store m-theme-null-background"
       ng-if="view === 'store'">
       <!-- SEARCH BAR -->
-			<div class="search-bar m-theme-bar-top">
+			<div class="search-bar m-theme-bar-top {{ platform }}">
 				<input
           class="search-input"
           type="search"

@@ -13,13 +13,17 @@ module.exports = {
     $scope,
     $rootScope,
     $mAppDef,
+    $mDataLoader,
+    $mPlatform,
+    $mTheme,
+    $mAlert,
+    $mContextualActions,
     $filter,
     $interval,
     $timeout,
     $ionicScrollDelegate,
     $state,
     $stateParams,
-    $mDataLoader,
     $http,
     $q
   ) {
@@ -35,6 +39,11 @@ module.exports = {
       CART: 'cart'
     };
 
+    var platform = {
+      ANDROID: 'android',
+      IOS: 'ios'
+    };
+
     var helpers = {
       error: function() {
         $scope.isLoading = false;
@@ -46,6 +55,29 @@ module.exports = {
         var splited = corrected.split('.');
         var localized = splited[0].replace(',', '.') + '.' + splited[1];
         return localized;
+      },
+      colors: function() {
+        var colors = $mAppDef().load().colors;
+        colors.darker = $mTheme.shadeColor(colors.header_color, -0.2);
+        colors.lighter = $mTheme.shadeColor(colors.header_color, 0.2);
+        return colors;
+      },
+      addCartContextualAction: function() {
+        var icons = ["ion-ios-cart", "ion-android-cart"];
+
+        $mContextualActions.add(
+          $scope.page.page_id,
+          "cart",
+          icons,
+          "contextual",
+          function() {
+            $mAlert.shows(
+              "It's gonna be",
+              'L E G E N D A R Y',
+              'OK'
+            );
+          }
+        );
       }
     };
 
@@ -141,6 +173,10 @@ module.exports = {
             // Set the STORE functions
             $scope.loadMore = storeController.loadMoreFromSection;
             $scope.goToProduct = storeController.goToProduct;
+
+            // Set the classes styles
+            // $scope.isHome;
+
             // Set error and emptData to false
             $scope.error = false;
             $scope.noContent = false;
@@ -214,8 +250,14 @@ module.exports = {
       appModel.loadInstanceData()
         .then(function() {
           // Make the general functions avalable in the scope
-          $scope.colors = $mAppDef().load().colors;
+          $scope.colors = helpers.colors();
           $scope.localizeCurrency = helpers.localizeCurrency;
+          $scope.platform = $mPlatform.isAndroid() ?
+            platform.ANDROID :
+            platform.IOS;
+
+          // Add the cart to the header
+          helpers.addCartContextualAction();
 
           var detail = $stateParams.detail.split('&');
           $scope.view = detail[0] === '' ? page.STORE : detail[0];
