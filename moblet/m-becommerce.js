@@ -64,7 +64,6 @@ module.exports = {
       },
       addCartContextualAction: function() {
         var icons = ["ion-ios-cart", "ion-android-cart"];
-
         $mContextualActions.add(
           $scope.page.page_id,
           "cart",
@@ -78,6 +77,11 @@ module.exports = {
             );
           }
         );
+      },
+      scrollToId: function(id) {
+        var top = document.getElementById(id).offsetTop;
+        $ionicScrollDelegate.scrollTo(0, top, true);
+        $ionicScrollDelegate.resize();
       }
     };
 
@@ -138,12 +142,11 @@ module.exports = {
       }
     };
 
-    var storeController = {
-      loadMoreFromSection: function(section) {
-        section.limit = section.products.length;
-        // Resize the scroll
-        $ionicScrollDelegate.resize();
-      },
+    navigationController = {
+      /**
+       * Got to a product's page
+       * @param  {Number} productId The product ID
+       */
       goToProduct: function(productId) {
         console.log(productId);
         appModel.getData($scope.instanceData.detail(productId))
@@ -156,7 +159,39 @@ module.exports = {
             helpers.error(err);
             console.error(err);
           });
+      }
+    /**
+     * Go to the highlights page
+     * @return {[type]} [description]
+     */
+    // goToHighlights: function() {
+    //   $stateParams.detail = page.HIGHLIGHTS;
+    //   $state.go('pages', $stateParams);
+    // },
+    };
+    var storeController = {
+      /**
+       * Change a section's ng-repeat limit to show all products
+       * @param  {Object} section The section object with it's products
+       */
+      loadMoreFromSection: function(section, sectionIndex) {
+        section.limit = section.products.length;
+
+        // Scroll and resize
+        helpers.scrollToId('section-' + sectionIndex + '-product-3');
       },
+      /**
+       * Change the banners ng-repeat limit to show all banners
+       */
+      bannersLimitSwap: function() {
+        $scope.bannersLimit = $scope.bannersLimit === 1 ?
+          $scope.banners.length :
+          1;
+
+        // Scroll and resize
+        helpers.scrollToId('banner-container');
+      },
+
       /**
        * Show the moblet main view
        */
@@ -171,11 +206,8 @@ module.exports = {
           finished += 1;
           if (finished === totalLoad) {
             // Set the STORE functions
-            $scope.loadMore = storeController.loadMoreFromSection;
-            $scope.goToProduct = storeController.goToProduct;
-
-            // Set the classes styles
-            // $scope.isHome;
+            $scope.loadMoreFromSection = storeController.loadMoreFromSection;
+            $scope.bannersLimitSwap = storeController.bannersLimitSwap;
 
             // Set error and emptData to false
             $scope.error = false;
@@ -190,15 +222,21 @@ module.exports = {
           .then(function(response) {
             $scope.store = response.data;
             $scope.categories = response.data.headerJson.headerCategoryJsons;
+
+            // Save the categories in the root scope
+            $rootScope.categories = $scope.categories;
             finishedLoading();
           })
           .catch(function(err) {
             helpers.error(err);
           });
-
         appModel.getData($scope.instanceData.banner)
           .then(function(response) {
             $scope.banners = response.data;
+            $scope.bannersLimit = 1;
+
+            // Save the banners in the root scope
+            $rootScope.banners = $scope.banners;
             finishedLoading();
           })
           .catch(function(err) {
@@ -243,21 +281,31 @@ module.exports = {
       }
     };
 
+    var highlightsController = {
+      showView: function() {
+        $scope.banners = $rootScope.banners;
+        $scope.isLoading = false;
+      // $scope.banners = response.data;
+      }
+    };
     var router = function() {
       console.debug('router()');
       // Set general status
+      helpers.addCartContextualAction();
       $scope.isLoading = true;
       appModel.loadInstanceData()
         .then(function() {
           // Make the general functions avalable in the scope
           $scope.colors = helpers.colors();
+          $scope.page = page;
           $scope.localizeCurrency = helpers.localizeCurrency;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :
             platform.IOS;
 
-          // Add the cart to the header
-          helpers.addCartContextualAction();
+          // Make all navigation available in the scope
+          $scope.goToProduct = navigationController.goToProduct;
+          // $scope.goToCategory = navigationController.goToCategory;
 
           var detail = $stateParams.detail.split('&');
           $scope.view = detail[0] === '' ? page.STORE : detail[0];

@@ -28,6 +28,7 @@ m-becommerce {
     from {transform: translate3d(-50vw, 0, 0);}
     to {transform: translate3d(0, 0, 0);}
   }
+  // STORE PAGE
 	.store {
     // Specific platform styles
     .ios {
@@ -92,13 +93,18 @@ m-becommerce {
         }
       }
 		}
+    .banner, .sections {
+      border-bottom: 3vw solid @color-grey;
+    }
     .banner{
-      background: rgba(215,215,215,0.25);
-      padding-bottom: 15px;
       img {
       	width: 100%;
       	margin: 0 auto;
       	display: block;
+      }
+      .more-highlights-button {
+        text-align: center;
+        padding: 3vw;
       }
     }
     // Don't add the bottom border in the last section
@@ -107,7 +113,6 @@ m-becommerce {
     }
     .sections {
       padding: 3vw;
-      border-bottom: 3vw solid @color-grey;
       h1.section-title {
         font-size: 16px;
         margin-bottom: 3vw;
@@ -226,4 +231,5 @@ m-becommerce {
       }
     }
   }
+
 }

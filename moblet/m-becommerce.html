@@ -5,16 +5,14 @@ inner-scroll="true"
 no-content="noContent"
 unavaliable="error"
 >
-  <m-content>
-    <style>
-      m-becommerce .store .android .store-menu .selected {
-        border-bottom-color: {{ colors.darker}}!important;
-      }
-    </style>
+  <m-content
+  class="m-theme-null-background"
+  >
     <!-- STORE VIEW (MAIN) -->
     <div
-      class="store m-theme-null-background"
-      ng-if="view === 'store'">
+    ng-if="view === page.STORE"
+    class="store"
+    >
       <!-- SEARCH BAR -->
 			<div class="search-bar m-theme-bar-top {{ platform }}">
 				<input
@@ -35,25 +33,46 @@ unavaliable="error"
         </div>
       </div>
       <!-- BANNER -->
-      <div class="banner">
-        <img ng-src="{{ banners[0].image }}" alt="{{ banners[0].alt }}" class="store-banner"/>
+      <div id="banner-container" class="banner">
+        <div ng-repeat="banner in banners | limitTo: bannersLimit">
+          <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
+        </div>
+        <div
+        ng-if="banners.length > 1"
+        ng-click="bannersLimitSwap()"
+        class="more-highlights-button"
+        >
+          <span ng-if="bannersLimit === 1">
+            mais destaques
+            <i class="icon ion-chevron-down"></i>
+          </span>
+          <span ng-if="bannersLimit !== 1">
+            menos destaques
+            <i class="icon ion-chevron-up"></i>
+          </span>
+        </div>
       </div>
       <!-- SECTIONS -->
       <div
-        class="sections"
         ng-if="section.products.length > 0"
-        ng-repeat="(i, section) in sections">
-        <h1 class="section-title m-theme-text-color"
-            ng-if="section.products.length > 0"
-            ng-bind="section.name">
+        ng-repeat="(sectionIndex, section) in sections"
+        class="sections"
+        id="section-{{ sectionIndex }}"
+        >
+        <h1
+        ng-if="section.products.length > 0"
+        ng-bind="section.name"
+        class="section-title m-theme-text-color"
+        >
         </h1>
         <!-- PRODUCTS -->
         <div class="products">
           <div
-            ng-repeat="product in section.products | limitTo: section.limit"
+            ng-repeat="(productIndex, product) in section.products | limitTo: section.limit"
             ng-if="section.products.length > 0"
             ng-click="goToProduct(product.id)"
             class="product"
+            id="section-{{ sectionIndex }}-product-{{ productIndex }}"
             >
               <!-- PRODUCT IMAGE -->
               <div class="skeleton thumb-size">
@@ -103,7 +122,7 @@ unavaliable="error"
           class="more-products-button"
           ng-if="section.products.length > 0 &&
                  section.limit < section.products.length"
-          ng-click="loadMore(section)"
+          ng-click="loadMoreFromSection(section, sectionIndex)"
           >
           <p>
             ver mais
@@ -113,9 +132,9 @@ unavaliable="error"
     </div>
     <!-- PRODUCT VIEW -->
     <div
-      class="detail m-theme-null-background {{ itemStyle }}"
-      ng-if="view === 'product'"
-      >
+    ng-if="view === page.PRODUCT"
+    class="product"
+    >
       E AE?
       {{ productId }}
       <!-- <img class="full-width-image" ng-src="{{ product.image }}">
@@ -124,5 +143,16 @@ unavaliable="error"
         <div class="description" m-bind-html="detail.description"></div>
       </div> -->
     </div>
+    <!-- CATEGORY VIEW -->
+    <div
+    ng-if="view === page.CATEGORY"
+    class="category"
+    >
+    </div>
   </m-content>
+  <style>
+    .android .store-menu .selected {
+      border-bottom-color: {{ colors.darker}}!important;
+    }
+  </style>
 </m-moblet>
