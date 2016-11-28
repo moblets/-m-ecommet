@@ -6,9 +6,7 @@ module.exports = {
   i18n: {
     pt: "lang/pt-BR.json"
   },
-  link: function() {
-    $mInjector.inject('https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.5.8/angular-locale_pt-br.min.js');
-  },
+  link: function() {},
   controller: function(
     $scope,
     $rootScope,
@@ -40,8 +38,8 @@ module.exports = {
     };
 
     var menuButton = {
-      HOME: 'home',
-      CATEGORIES: 'categories'
+      HOME: 'isButtonHomeActive',
+      CATEGORIES: 'isButtonCategoriesActive'
     };
 
     var platform = {
@@ -58,7 +56,7 @@ module.exports = {
       localizeCurrency: function(value) {
         var corrected = $filter('currency')(value, "R$", 2);
         var splited = corrected.split('.');
-        var localized = splited[0].replace(',', '.') + '.' + splited[1];
+        var localized = splited[0].replace(',', '.') + ',' + splited[1];
         return localized;
       },
       colors: function() {
@@ -86,6 +84,17 @@ module.exports = {
       scrollToId: function(id) {
         var top = document.getElementById(id).offsetTop;
         $ionicScrollDelegate.scrollTo(0, top, true);
+      },
+      setProductPrice: function(products) {
+        // var responseList = products;
+        for (var i = 0; i < products.length; i++) {
+          if (products[i].valueFrom &&
+            products[i].valueFrom > products[i].valueTo) {
+            products[i].hasPromotion = true;
+          } else {
+            products[i].hasPromotion = false;
+          }
+        }
       }
     };
 
@@ -177,6 +186,7 @@ module.exports = {
       /**
        * Change a section's ng-repeat limit to show all products
        * @param  {Object} section The section object with it's products
+       * @param  {Number} sectionIndex The index of the section
        */
       loadMoreFromSection: function(section, sectionIndex) {
         // First, scroll to position
@@ -191,9 +201,10 @@ module.exports = {
        */
       bannersLimitSwap: function() {
         // First, change the list size
-        $scope.bannersLimit = $scope.bannersLimit === 1 ?
+        $scope.bannersLimit = $scope.showMoreBannersButton ?
           $scope.banners.length :
           1;
+        $scope.showMoreBannersButton = !$scope.showMoreBannersButton;
         // Resize scroll
         $ionicScrollDelegate.resize();
         // Scroll to position
@@ -216,7 +227,8 @@ module.exports = {
             // Set the STORE functions
             $scope.loadMoreFromSection = storeController.loadMoreFromSection;
             $scope.bannersLimitSwap = storeController.bannersLimitSwap;
-            $scope.selected = menuButton.HOME;
+            $scope[menuButton.HOME] = true;
+            $scope[menuButton.CATEGORIES] = false;
 
             // Set error and emptData to false
             $scope.error = false;
@@ -241,8 +253,12 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.banner)
           .then(function(response) {
-            $scope.banners = response.data;
-            $scope.bannersLimit = 1;
+            $scope.banners = {
+              limit: 1,
+              hasMoreBanners: response.data.length > 1,
+              showMoreBannersButton: response.data.length > 1,
+              products: response.data
+            };
 
             // Save the banners in the root scope
             $rootScope.banners = $scope.banners;
@@ -253,9 +269,13 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section3)
           .then(function(response) {
+            helpers.setProductPrice(response.data);
             $scope.sections[0] = {
               name: 'Vitrine 1',
               limit: sectionLimit,
+              hasProducts: response.data.length > 0,
+              hasMoreProducts: response.data.length > sectionLimit,
+              showMoreProductsButton: response.data.length > sectionLimit,
               products: response.data
             };
             finishedLoading();
@@ -265,10 +285,12 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section4)
           .then(function(response) {
+            helpers.setProductPrice(response.data);
             $scope.sections[1] = {
               name: 'Vitrine 2',
               limit: sectionLimit,
-              products: response.data
+              products: response.data,
+              hasItems: response.data.length > 0
             };
             finishedLoading();
           })
@@ -277,10 +299,12 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section5)
           .then(function(response) {
+            helpers.setProductPrice(response.data);
             $scope.sections[2] = {
               name: 'Vitrine 3',
               limit: sectionLimit,
-              products: response.data
+              products: response.data,
+              hasItems: response.data.length > 0
             };
             finishedLoading();
           })
@@ -290,13 +314,13 @@ module.exports = {
       }
     };
 
-    var highlightsController = {
-      showView: function() {
-        $scope.banners = $rootScope.banners;
-        $scope.isLoading = false;
-      // $scope.banners = response.data;
-      }
-    };
+    // var highlightsController = {
+    //   showView: function() {
+    //     $scope.banners = $rootScope.banners;
+    //     $scope.isLoading = false;
+    //   // $scope.banners = response.data;
+    //   }
+    // };
     var router = function() {
       console.debug('router()');
       // Set general status
@@ -307,7 +331,6 @@ module.exports = {
           // Make the general functions avalable in the scope
           $scope.colors = helpers.colors();
           $scope.page = page;
-          $scope.menuButton = menuButton;
           $scope.localizeCurrency = helpers.localizeCurrency;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :

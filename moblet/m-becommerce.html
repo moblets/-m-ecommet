@@ -22,16 +22,18 @@ unavaliable="error"
         <div class="store-menu">
           <div
           class="menu-button m-theme-button"
-          ng-class="{'selected' : selected === menuButton.HOME }"
+          ng-class="{'selected' : isButtonHomeActive }"
           type="button"
           name="button"
-          >Home</div>
+          >
+          Home</div>
           <div
           class="menu-button m-theme-button"
-          ng-class="{'selected' : selected === menuButton.CATEGORIES }"
+          ng-class="{'selected' : isButtonCategoriesActive }"
           type="button"
           name="button"
-          >Categorias</div>
+          >
+          Categorias</div>
         </div>
       </div>
       <!-- BANNER -->
@@ -40,15 +42,15 @@ unavaliable="error"
           <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
         </div>
         <div
-        ng-if="banners.length > 1"
+        ng-if="hasMoreBanners"
         ng-click="bannersLimitSwap()"
         class="more-highlights-button"
         >
-          <span ng-if="bannersLimit === 1">
+          <span ng-if="showMoreBannersButton">
             mais destaques
             <i class="icon ion-chevron-down"></i>
           </span>
-          <span ng-if="bannersLimit !== 1">
+          <span ng-if="!showMoreBannersButton">
             menos destaques
             <i class="icon ion-chevron-up"></i>
           </span>
@@ -56,13 +58,12 @@ unavaliable="error"
       </div>
       <!-- SECTIONS -->
       <div
-        ng-if="section.products.length > 0"
+        ng-if="section.hasItems"
         ng-repeat="(sectionIndex, section) in sections"
         class="section"
         id="section-{{ sectionIndex }}"
         >
         <h1
-        ng-if="section.products.length > 0"
         ng-bind="section.name"
         class="section-title m-theme-text-color"
         >
@@ -71,7 +72,6 @@ unavaliable="error"
         <div class="products">
           <div
             ng-repeat="(productIndex, product) in section.products | limitTo: section.limit"
-            ng-if="section.products.length > 0"
             ng-click="goToProduct(product.id)"
             class="product"
             id="section-{{ sectionIndex }}-product-{{ productIndex }}"
@@ -97,22 +97,19 @@ unavaliable="error"
               </p>
               <!-- PRODUCT PRICE -->
               <p
-              ng-if="product.valueFrom &&
-                     product.valueFrom > product.valueTo"
+              ng-if="product.hasPromotion"
               class="value value-from"
               >
               {{ localizeCurrency(product.valueFrom) }}
               </p>
               <p
-              ng-if="product.valueFrom &&
-                     product.valueFrom > product.valueTo"
+              ng-if="product.hasPromotion"
               class="value value-to m-theme-text-color"
               >
                 {{ localizeCurrency(product.valueTo) }}
               </p>
               <p
-              ng-if="!product.valueFrom ||
-                     product.valueFrom <= product.valueTo"
+              ng-if="!product.hasPromotion"
               class="value m-theme-text-color"
               >
                 {{ localizeCurrency(product.valueTo) }}
