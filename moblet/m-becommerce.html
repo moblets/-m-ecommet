@@ -38,19 +38,19 @@ unavaliable="error"
       </div>
       <!-- BANNER -->
       <div id="banner-container" class="banner">
-        <div ng-repeat="banner in banners | limitTo: bannersLimit">
+        <div ng-repeat="banner in banners.products | limitTo: banners.limit">
           <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
         </div>
         <div
-        ng-if="hasMoreBanners"
+        ng-if="banners.hasMoreBanners"
         ng-click="bannersLimitSwap()"
         class="more-highlights-button"
         >
-          <span ng-if="showMoreBannersButton">
+          <span ng-if="banners.showMoreBannersButton">
             mais destaques
             <i class="icon ion-chevron-down"></i>
           </span>
-          <span ng-if="!showMoreBannersButton">
+          <span ng-if="!banners.showMoreBannersButton">
             menos destaques
             <i class="icon ion-chevron-up"></i>
           </span>
@@ -58,11 +58,11 @@ unavaliable="error"
       </div>
       <!-- SECTIONS -->
       <div
-        ng-if="section.hasItems"
-        ng-repeat="(sectionIndex, section) in sections"
-        class="section"
-        id="section-{{ sectionIndex }}"
-        >
+      ng-repeat="(sectionIndex, section) in sections"
+      ng-if="section.hasProducts"
+      class="section"
+      id="section-{{ sectionIndex }}"
+      >
         <h1
         ng-bind="section.name"
         class="section-title m-theme-text-color"
@@ -119,8 +119,8 @@ unavaliable="error"
         <!-- MORE BUTTON -->
         <div
           class="more-products-button"
-          ng-if="section.products.length > 0 &&
-                 section.limit < section.products.length"
+          ng-if="section.hasProducts &&
+                 section.showMoreProductsButton"
           ng-click="loadMoreFromSection(section, sectionIndex)"
           >
           <p>
@@ -134,13 +134,11 @@ unavaliable="error"
     ng-if="view === page.PRODUCT"
     class="product"
     >
-      E AE?
-      {{ productId }}
-      <!-- <img class="full-width-image" ng-src="{{ product.image }}">
+      <img class="full-width-image" ng-src="{{ product.productImages[0].url }}">
       <div class="detail-container">
-        <h1 class="title" ng-bind="detail.title"></h1>
-        <div class="description" m-bind-html="detail.description"></div>
-      </div> -->
+        <h1 class="title" ng-bind="product.name"></h1>
+        <div class="description" m-bind-html="product.description"></div>
+      </div>
     </div>
     <!-- CATEGORY VIEW -->
     <div

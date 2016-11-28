@@ -48,10 +48,11 @@ module.exports = {
     };
 
     var helpers = {
-      error: function() {
+      error: function(err) {
         $scope.isLoading = false;
         $scope.error = true;
         $scope.noContent = true;
+        console.error(err);
       },
       localizeCurrency: function(value) {
         var corrected = $filter('currency')(value, "R$", 2);
@@ -161,17 +162,8 @@ module.exports = {
        * @param  {Number} productId The product ID
        */
       goToProduct: function(productId) {
-        console.log(productId);
-        appModel.getData($scope.instanceData.detail(productId))
-          .then(function(response) {
-            console.log(response.data);
-            $stateParams.detail = page.PRODUCT + '&' + productId;
-            $state.go('pages', $stateParams);
-          })
-          .catch(function(err) {
-            helpers.error(err);
-            console.error(err);
-          });
+        $stateParams.detail = page.PRODUCT + '&' + productId;
+        $state.go('pages', $stateParams);
       }
     /**
      * Go to the highlights page
@@ -215,6 +207,7 @@ module.exports = {
        * Show the moblet main view
        */
       showView: function() {
+        console.log('show store');
         $scope.sections = [];
 
         var finished = 0;
@@ -223,6 +216,7 @@ module.exports = {
 
         var finishedLoading = function() {
           finished += 1;
+          console.log(finished);
           if (finished === totalLoad) {
             // Set the STORE functions
             $scope.loadMoreFromSection = storeController.loadMoreFromSection;
@@ -289,8 +283,10 @@ module.exports = {
             $scope.sections[1] = {
               name: 'Vitrine 2',
               limit: sectionLimit,
-              products: response.data,
-              hasItems: response.data.length > 0
+              hasProducts: response.data.length > 0,
+              hasMoreProducts: response.data.length > sectionLimit,
+              showMoreProductsButton: response.data.length > sectionLimit,
+              products: response.data
             };
             finishedLoading();
           })
@@ -303,10 +299,27 @@ module.exports = {
             $scope.sections[2] = {
               name: 'Vitrine 3',
               limit: sectionLimit,
-              products: response.data,
-              hasItems: response.data.length > 0
+              hasProducts: response.data.length > 0,
+              hasMoreProducts: response.data.length > sectionLimit,
+              showMoreProductsButton: response.data.length > sectionLimit,
+              products: response.data
             };
             finishedLoading();
+          })
+          .catch(function(err) {
+            helpers.error(err);
+          });
+      }
+    };
+
+    var productController = {
+      showView: function(productId) {
+        console.log(productId);
+        appModel.getData($scope.instanceData.detail(productId))
+          .then(function(response) {
+            console.log(response.data);
+            $scope.product = response.data;
+            $scope.isLoading = false;
           })
           .catch(function(err) {
             helpers.error(err);
@@ -358,7 +371,7 @@ module.exports = {
             /** SUBCATEGORY PAGE **/
             console.debug('PRODUCT');
             $scope.productId = $stateParams.detail;
-            $scope.isLoading = false;
+            productController.showView($scope.productId);
           } else if ($scope.view === page.CART) {
             /** CART PAGE **/
             console.debug('CART');
