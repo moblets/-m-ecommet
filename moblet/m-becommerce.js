@@ -319,6 +319,25 @@ module.exports = {
           .then(function(response) {
             console.log(response.data);
             $scope.product = response.data;
+
+            // Slider
+            $scope.slider = {};
+            $scope.slider.sliderDelegate = null;
+            $scope.sliderOptions = {
+              initialSlide: 0,
+              direction: 'horizontal',
+              speed: 300,
+              loop: false
+            };
+            $scope.$watch('slider.sliderDelegate', function(newVal, oldVal) {
+              if (newVal != null) {
+                $scope.slider.sliderDelegate.on('slideChangeEnd', function() {
+                  $scope.slider.currentPage = $scope.slider.sliderDelegate.activeIndex;
+                  // use $scope.$apply() to refresh any content external to the slider
+                  $scope.$apply();
+                });
+              }
+            });
             $scope.isLoading = false;
           })
           .catch(function(err) {

@@ -134,8 +134,19 @@ unavaliable="error"
     ng-if="view === page.PRODUCT"
     class="product"
     >
-      <img class="full-width-image" ng-src="{{ product.productImages[0].url }}">
       <div class="detail-container">
+        <ion-slides options="sliderOptions" slider="slider.sliderDelegate">
+          <ion-slide-page
+          ng-repeat="image in product.productImages"
+          >
+          <div
+          class="image-container"
+          style="background-image: url('{{ image.url }}')"
+          >
+            <!-- <img ng-src="{{ image.url }}"> -->
+          </div>
+        </ion-slide-page>
+      </ion-slides>
         <h1 class="title" ng-bind="product.name"></h1>
         <div class="description" m-bind-html="product.description"></div>
       </div>
