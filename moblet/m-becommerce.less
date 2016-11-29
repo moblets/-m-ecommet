@@ -1,5 +1,6 @@
 m-becommerce {
-  @color-grey: #EDEDED;
+  @color-light-grey: #EDEDED;
+  @color-medium-grey: #E1E1E1;
   @color-dark-grey: #4A4A4A;
   @product-font-size: 13px;
   @product-line-height: 1.4;
@@ -27,6 +28,13 @@ m-becommerce {
   @keyframes new-product-left {
     from {transform: translate3d(-50vw, 0, 0);}
     to {transform: translate3d(0, 0, 0);}
+  }
+  // GENERAL
+  .bottom-border {
+    border-bottom: 3vw solid @color-light-grey;
+  }
+  .side-padding {
+    padding: 3vw;
   }
   // STORE PAGE
 	.store {
@@ -94,9 +102,6 @@ m-becommerce {
         }
       }
 		}
-    .banner, .sections {
-      border-bottom: 3vw solid @color-grey;
-    }
     .banner{
       img {
       	width: 100%;
@@ -105,7 +110,6 @@ m-becommerce {
       }
       .more-highlights-button {
         text-align: center;
-        padding: 3vw;
       }
     }
     // Don't add the bottom border in the last section
@@ -113,7 +117,6 @@ m-becommerce {
       border-bottom: none;
     }
     .section {
-      padding: 3vw;
       h1.section-title {
         font-size: 16px;
         margin-bottom: 3vw;
@@ -126,7 +129,7 @@ m-becommerce {
         // Left products
         :nth-child(odd).product {
           padding-right: 3vw;
-          border-right: 1px solid @color-grey;
+          border-right: 1px solid @color-light-grey;
           animation-name: new-product-left;
         }
         // Right products
@@ -136,7 +139,7 @@ m-becommerce {
         }
         // 'Single' last right product
         :nth-child(even):nth-last-child(2).product {
-          border-bottom: 1px solid @color-grey;
+          border-bottom: 1px solid @color-light-grey;
         }
         // Last row products
         :nth-last-child(1).product, :nth-last-child(2).product {
@@ -148,8 +151,8 @@ m-becommerce {
           float: left;
           background: #FFFFFF;
           color: @color-dark-grey;
-          padding: 3vw 0 3vw 0;
-          border-bottom: 1px solid @color-grey;
+          padding: 3vw 0;
+          border-bottom: 1px solid @color-light-grey;
           animation-duration: .3s;
           .skeleton{
         		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
@@ -215,7 +218,7 @@ m-becommerce {
       }
       .more-products-button {
         background: #FFFFFF;
-        border-top: 1px solid @color-grey;
+        border-top: 1px solid @color-light-grey;
         font-size: 14px;
         letter-spacing: 0;
         text-align: center;
@@ -237,24 +240,63 @@ m-becommerce {
     // Slider
     ion-slides {
       width: 100vw;
-      height: 82vw;
-      padding: 3vw;
-      margin-bottom: 20px;
+      // 20px is used for the pagination
+      height: ~"calc(83vw + 20px)";
+      padding-top: 3vw;
+      .image-container {
+        width: 94vw;
+        height: 77vw;
+        margin: 0 3vw;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        // Debug
+        background-color: #949494;
+      }
+      .swiper-container-horizontal>.swiper-pagination {
+        bottom: 0;
+      }
     }
-    .image-container {
-      width: ~"calc(93vw - 4px)";
-      height: ~"calc(70vw - 4px)";
-      margin: 4px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.50);
+    .title{
+      h1, h2 {
+        font-size: 14px;
+        color: @color-dark-grey;
+      }
+      h2 {
+        font-weight: normal;
+      }
     }
-    .swiper-container-horizontal>.swiper-pagination {
-      bottom: 0;
+    hr {
+      margin: 0 3vw;
+      background-color: @color-medium-grey;
+      border: 0;
+      height: 1px;
     }
-    .content{
-      padding: 3vw;
+    .options {
+      font-size: 13px;
+    }
+    .price {
+      color: @color-dark-grey;
+      font-size: 13px;
+      .cc, .slip {
+        padding-bottom: 3vw;
+      }
+      .price {
+        font-size: 18px;
+      }
+      .installment {
+        float: right;
+      }
+      .type {
+      }
+      .cta {
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 2px;
+        padding: 10px;
+        text-align: center;
+        text-transform: uppercase;
+      }
     }
   }
 }

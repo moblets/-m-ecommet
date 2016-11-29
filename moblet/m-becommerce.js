@@ -185,6 +185,7 @@ module.exports = {
         helpers.scrollToId('section-' + sectionIndex + '-product-3');
         // Change the list size
         section.limit = section.products.length;
+        section.showMoreProductsButton = false;
         // Resize scroll
         $ionicScrollDelegate.resize();
       },
@@ -363,6 +364,7 @@ module.exports = {
           // Make the general functions avalable in the scope
           $scope.colors = helpers.colors();
           $scope.page = page;
+          // TODO Process each product before
           $scope.localizeCurrency = helpers.localizeCurrency;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :
