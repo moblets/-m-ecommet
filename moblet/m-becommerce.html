@@ -43,31 +43,29 @@ unavaliable="error"
         <div ng-repeat="banner in banners.products | limitTo: banners.limit">
           <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
         </div>
+        <!-- MORE BUTTON -->
         <div
-        ng-if="banners.hasMoreBanners"
-        ng-click="bannersLimitSwap()"
-        class="more-highlights-button side-padding"
-        >
-          <span ng-if="banners.showMoreBannersButton">
-            mais destaques
-            <i class="icon ion-chevron-down"></i>
-          </span>
-          <span ng-if="!banners.showMoreBannersButton">
-            menos destaques
-            <i class="icon ion-chevron-up"></i>
-          </span>
+          class="load-button"
+          ng-class="{
+            'load-more': banners.showMoreButton,
+            'load-less': !banners.showMoreButton
+          }"
+          ng-if="banners.hasMoreBanners"
+          ng-click="bannersLimitSwap()"
+          >
+          <i class="icon ion-chevron-down"></i>
         </div>
       </div>
       <!-- SECTIONS -->
       <div
       ng-repeat="(sectionIndex, section) in sections"
       ng-if="section.hasProducts"
-      class="section bottom-border side-padding"
+      class="product-group bottom-border main-padding"
       id="section-{{ sectionIndex }}"
       >
         <h1
         ng-bind="section.name"
-        class="section-title m-theme-text-color"
+        class="section m-theme-text-color"
         >
         </h1>
         <!-- PRODUCTS -->
@@ -101,33 +99,34 @@ unavaliable="error"
               <p
               ng-if="product.hasPromotion"
               class="value value-from"
+              ng-bind="product.valueFrom"
               >
-              {{ localizeCurrency(product.valueFrom) }}
               </p>
               <p
               ng-if="product.hasPromotion"
               class="value value-to m-theme-text-color"
+              ng-bind="product.valueTo"
               >
-                {{ localizeCurrency(product.valueTo) }}
               </p>
               <p
               ng-if="!product.hasPromotion"
               class="value m-theme-text-color"
+              ng-bind="product.valueTo"
               >
-                {{ localizeCurrency(product.valueTo) }}
               </p>
           </div>
         </div>
         <!-- MORE BUTTON -->
         <div
-          class="more-products-button"
-          ng-if="section.hasProducts &&
-                 section.showMoreProductsButton"
-          ng-click="loadMoreFromSection(section, sectionIndex)"
+          class="load-button"
+          ng-class="{
+            'load-more': section.hasMoreProducts,
+            'load-less': !section.hasMoreProducts
+          }"
+          ng-if="section.showSwapButton"
+          ng-click="productGroupLimitSwap(section, 'section-' + sectionIndex)"
           >
-          <p>
-            ver mais
-          </p>
+          <i class="icon ion-chevron-down"></i>
         </div>
       </div>
     </div>
@@ -152,25 +151,25 @@ unavaliable="error"
           </ion-slide-page>
         </ion-slides>
         <!-- PRODUCT DATA -->
-        <div class="title side-padding">
+        <div class="title main-padding">
           <h1 ng-bind="product.name"></h1>
           <h2 ng-bind="product.smallDescription"></h2>
         </div>
         <hr>
-        <div class="options bottom-border side-padding">
+        <div class="options bottom-border main-padding">
           Opções do produto
         </div>
-        <div class="options bottom-border side-padding">
+        <div class="options bottom-border main-padding">
           Frete e prazo de entrega
         </div>
         <!-- PRODUCT PRICE AND CTA -->
-        <div class="price bottom-border side-padding">
+        <div class="price bottom-border main-padding">
           <div class="cc">
             <span
             ng-bind="localizeCurrency(product.valueTo)"
             class="price"
             ></span>
-            <div class="installment m-theme-text-color">ver parcelamento</div>
+            <div class="right m-theme-text-color">ver parcelamento</div>
             <div class="type">no cartão de crédito</div>
           </div>
           <div
@@ -192,12 +191,118 @@ unavaliable="error"
             Comprar
           </div>
         </div>
-        <div class="options bottom-border side-padding">
-          Descrição
-          <hr>
-          Ficha técnica
+        <div class="options main-padding">
+          <div
+          ng-click="accordionSwap('showDescription')"
+          class="accordion-title"
+          >
+            <span>Descrição</span>
+            <i
+            ng-class="{
+              'ion-chevron-up': showDescription,
+              'ion-chevron-down': !showDescription
+            }"
+            class="right"
+            ></i>
+          </div>
+          <div
+          ng-if="showDescription"
+          class="description"
+          m-bind-html="product.description"
+          >
+          </div>
         </div>
-        <div class="description" m-bind-html="product.description"></div>
+          <hr>
+        <div class="options bottom-border main-padding">
+          <div
+          ng-click="accordionSwap('showTechDetails')"
+          class="accordion-title"
+          >
+            <span >Ficha técnica</span>
+            <i
+            ng-class="{
+              'ion-chevron-up': showTechDetails,
+              'ion-chevron-down': !showTechDetails
+            }"
+            class="right"
+            ></i>
+            <div
+            ng-if="showTechDetails"
+            class="description"
+            m-bind-html="product.information"
+            >
+          </div>
+        </div>
+      </div>
+      <!-- SIMILAR PRODUCTS LIST -->
+      <div
+      ng-if="hasSimilar"
+      class="product-group bottom-border main-padding"
+      id="similar"
+      >
+        <h1
+        ng-bind="similar.name"
+        ></h1>
+        <!-- PRODUCTS -->
+        <div class="products">
+          <div
+            ng-repeat="(productIndex, product) in similar.products | limitTo: similar.limit"
+            ng-click="goToProduct(product.id)"
+            class="product"
+            id="similar-product-{{ productIndex }}"
+            >
+              <!-- PRODUCT IMAGE -->
+              <div class="skeleton thumb-size">
+                <div
+                id="img-{{ product.id }}"
+                class="thumb"
+                ng-style="{'background-image':'url({{ product.thumbnail }})'}"
+                ></div>
+                <img
+                ng-src="{{ product.thumbnail }}"
+                onload="malbumImageLoaded(this)"
+                id="control-img-{{ product.id }}"
+                image-id="{{ product.id }}"
+                style="display:none"
+                />
+              </div>
+              <!-- PRODUCT NAME -->
+              <p class="name">
+                {{ product.name }}
+              </p>
+              <!-- PRODUCT PRICE -->
+              <p
+              ng-if="product.hasPromotion"
+              class="value value-from"
+              ng-bind="product.valueFrom"
+              >
+              </p>
+              <p
+              ng-if="product.hasPromotion"
+              class="value value-to m-theme-text-color"
+              ng-bind="product.valueTo"
+              >
+              </p>
+              <p
+              ng-if="!product.hasPromotion"
+              class="value m-theme-text-color"
+              ng-bind="product.valueTo"
+              >
+              </p>
+          </div>
+        </div>
+        <!-- MORE BUTTON -->
+        <div
+          class="load-button"
+          ng-class="{
+            'load-more': similar.hasMoreProducts,
+            'load-less': !similar.hasMoreProducts
+          }"
+          ng-if="similar.showSwapButton"
+          ng-click="productGroupLimitSwap(similar, 'similar')"
+          >
+          <i class="icon ion-chevron-down"></i>
+        </div>
       </div>
     </div>
     <!-- CATEGORY VIEW -->

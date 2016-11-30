@@ -47,6 +47,8 @@ module.exports = {
       IOS: 'ios'
     };
 
+    var groupLimit = 4;
+
     var helpers = {
       error: function(err) {
         $scope.isLoading = false;
@@ -92,10 +94,65 @@ module.exports = {
           if (products[i].valueFrom &&
             products[i].valueFrom > products[i].valueTo) {
             products[i].hasPromotion = true;
+            products[i].valueFrom = helpers.localizeCurrency(
+              products[i].valueFrom);
+            products[i].valueTo = helpers.localizeCurrency(
+              products[i].valueTo);
           } else {
             products[i].hasPromotion = false;
           }
         }
+      },
+      /**
+       * Change a section's ng-repeat limit to show all products
+       * @param  {Object} productGroup The $scope product group with it's
+       *                               products
+       * @param  {String} groupId      The html id of the product group
+       */
+      productGroupLimitSwap: function(productGroup, groupId) {
+        if (productGroup.hasMoreProducts === true) {
+          productGroup.hasMoreProducts = false;
+          productGroup.limit = productGroup.products.length;
+        } else {
+          productGroup.hasMoreProducts = true;
+          productGroup.limit = groupLimit;
+        }
+        // Resize scroll
+        $ionicScrollDelegate.resize();
+        // Scroll to position
+        helpers.scrollToId(groupId + '-product-0');
+      },
+      createProductGroup: function(name, data) {
+        helpers.setProductPrice(data);
+        var productGroup = {
+          name: name,
+          limit: data.length < groupLimit ? data.length : groupLimit,
+          hasProducts: data.length > 0,
+          hasMoreProducts: data.length > groupLimit,
+          showSwapButton: data.length > groupLimit,
+          products: data
+        };
+        return productGroup;
+      },
+      clearLog: function() {
+        // // CLEAR CONSOLE
+        if (typeof console._commandLineAPI !== 'undefined') {
+          console.API = console._commandLineAPI; // chrome
+        } else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
+          console.API = console._inspectorCommandLineAPI; // Safari
+        } else if (typeof console.clear !== 'undefined') {
+          console.API = console;
+        }
+
+        console.API.clear();
+      },
+      accordionSwap: function(accordionToggleName) {
+        $scope[accordionToggleName] = !$scope[accordionToggleName];
+
+        // Wait for the animation to finish
+        $timeout(function() {
+          $ionicScrollDelegate.resize();
+        }, 350);
       }
     };
 
@@ -176,28 +233,14 @@ module.exports = {
     };
     var storeController = {
       /**
-       * Change a section's ng-repeat limit to show all products
-       * @param  {Object} section The section object with it's products
-       * @param  {Number} sectionIndex The index of the section
-       */
-      loadMoreFromSection: function(section, sectionIndex) {
-        // First, scroll to position
-        helpers.scrollToId('section-' + sectionIndex + '-product-3');
-        // Change the list size
-        section.limit = section.products.length;
-        section.showMoreProductsButton = false;
-        // Resize scroll
-        $ionicScrollDelegate.resize();
-      },
-      /**
        * Change the banners ng-repeat limit to show all banners
        */
       bannersLimitSwap: function() {
         // First, change the list size
-        $scope.bannersLimit = $scope.showMoreBannersButton ?
-          $scope.banners.length :
+        $scope.banners.limit = $scope.banners.showMoreButton ?
+          $scope.banners.products.length :
           1;
-        $scope.showMoreBannersButton = !$scope.showMoreBannersButton;
+        $scope.banners.showMoreButton = !$scope.banners.showMoreButton;
         // Resize scroll
         $ionicScrollDelegate.resize();
         // Scroll to position
@@ -208,19 +251,16 @@ module.exports = {
        * Show the moblet main view
        */
       showView: function() {
-        console.log('show store');
         $scope.sections = [];
 
         var finished = 0;
         var totalLoad = 5;
-        var sectionLimit = 4;
 
         var finishedLoading = function() {
           finished += 1;
-          console.log(finished);
           if (finished === totalLoad) {
             // Set the STORE functions
-            $scope.loadMoreFromSection = storeController.loadMoreFromSection;
+            $scope.productGroupLimitSwap = helpers.productGroupLimitSwap;
             $scope.bannersLimitSwap = storeController.bannersLimitSwap;
             $scope[menuButton.HOME] = true;
             $scope[menuButton.CATEGORIES] = false;
@@ -251,7 +291,7 @@ module.exports = {
             $scope.banners = {
               limit: 1,
               hasMoreBanners: response.data.length > 1,
-              showMoreBannersButton: response.data.length > 1,
+              showMoreButton: response.data.length > 1,
               products: response.data
             };
 
@@ -264,15 +304,10 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section3)
           .then(function(response) {
-            helpers.setProductPrice(response.data);
-            $scope.sections[0] = {
-              name: 'Vitrine 1',
-              limit: sectionLimit,
-              hasProducts: response.data.length > 0,
-              hasMoreProducts: response.data.length > sectionLimit,
-              showMoreProductsButton: response.data.length > sectionLimit,
-              products: response.data
-            };
+            $scope.sections[0] = helpers.createProductGroup(
+              'Vitrine 1',
+              response.data
+            );
             finishedLoading();
           })
           .catch(function(err) {
@@ -280,15 +315,10 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section4)
           .then(function(response) {
-            helpers.setProductPrice(response.data);
-            $scope.sections[1] = {
-              name: 'Vitrine 2',
-              limit: sectionLimit,
-              hasProducts: response.data.length > 0,
-              hasMoreProducts: response.data.length > sectionLimit,
-              showMoreProductsButton: response.data.length > sectionLimit,
-              products: response.data
-            };
+            $scope.sections[1] = helpers.createProductGroup(
+              'Vitrine 2',
+              response.data
+            );
             finishedLoading();
           })
           .catch(function(err) {
@@ -296,15 +326,10 @@ module.exports = {
           });
         appModel.getData($scope.instanceData.sections.section5)
           .then(function(response) {
-            helpers.setProductPrice(response.data);
-            $scope.sections[2] = {
-              name: 'Vitrine 3',
-              limit: sectionLimit,
-              hasProducts: response.data.length > 0,
-              hasMoreProducts: response.data.length > sectionLimit,
-              showMoreProductsButton: response.data.length > sectionLimit,
-              products: response.data
-            };
+            $scope.sections[2] = helpers.createProductGroup(
+              'Vitrine 3',
+              response.data
+            );
             finishedLoading();
           })
           .catch(function(err) {
@@ -315,34 +340,59 @@ module.exports = {
 
     var productController = {
       showView: function(productId) {
-        console.log(productId);
         appModel.getData($scope.instanceData.detail(productId))
           .then(function(response) {
+            // Product
             console.log(response.data);
             $scope.product = response.data;
+            return productId;
+          })
+          .then(function(productId) {
+            appModel.getData($scope.instanceData.similar(productId))
+              .then(function(response) {
+                // Similar
+                if (response.data.length > 0) {
+                  $scope.hasSimilar = true;
+                  $scope.similar = helpers.createProductGroup(
+                    'Produtos relacionados',
+                    response.data
+                  );
+                }
+                console.log($scope.similar);
 
-            // Slider
-            $scope.slider = {};
-            $scope.slider.sliderDelegate = null;
-            $scope.sliderOptions = {
-              initialSlide: 0,
-              direction: 'horizontal',
-              speed: 300,
-              loop: false
-            };
-            $scope.$watch('slider.sliderDelegate', function(newVal, oldVal) {
-              if (newVal != null) {
-                $scope.slider.sliderDelegate.on('slideChangeEnd', function() {
+                $scope.showDescription = false;
+                $scope.showTechDetails = false;
+                $scope.localizeCurrency = helpers.localizeCurrency;
+                $scope.accordionSwap = helpers.accordionSwap;
+                $scope.productGroupLimitSwap = helpers.productGroupLimitSwap;
+
+                $scope.isLoading = false;
+              });
+          })
+          .catch(function(err) {
+            helpers.error(err);
+          });
+      },
+      slider: function() {
+        $scope.slider = {};
+        $scope.slider.sliderDelegate = null;
+        $scope.sliderOptions = {
+          initialSlide: 0,
+          direction: 'horizontal',
+          speed: 300,
+          loop: false
+        };
+        // Slider watcher
+        $scope.$watch(
+          'slider.sliderDelegate', function(newVal, oldVal) {
+            if (newVal != null) {
+              $scope.slider.sliderDelegate
+                .on('slideChangeEnd', function() {
                   $scope.slider.currentPage = $scope.slider.sliderDelegate.activeIndex;
                   // use $scope.$apply() to refresh any content external to the slider
                   $scope.$apply();
                 });
-              }
-            });
-            $scope.isLoading = false;
-          })
-          .catch(function(err) {
-            helpers.error(err);
+            }
           });
       }
     };
@@ -364,8 +414,6 @@ module.exports = {
           // Make the general functions avalable in the scope
           $scope.colors = helpers.colors();
           $scope.page = page;
-          // TODO Process each product before
-          $scope.localizeCurrency = helpers.localizeCurrency;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :
             platform.IOS;
@@ -391,6 +439,8 @@ module.exports = {
           } else if ($scope.view === page.PRODUCT) {
             /** SUBCATEGORY PAGE **/
             console.debug('PRODUCT');
+            helpers.clearLog();
+
             $scope.productId = $stateParams.detail;
             productController.showView($scope.productId);
           } else if ($scope.view === page.CART) {
