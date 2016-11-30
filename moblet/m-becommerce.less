@@ -255,13 +255,14 @@ m-becommerce {
   .product {
     // Slider
     ion-slides {
-      .swiper-container {
-        height: ~"calc(83vw + 20px)";
-      }
       width: 100vw;
       // 20px is used for the pagination
-      height: ~"calc(83vw + 20px)";
+      height: 83vw;
       padding-top: 3vw;
+      .swiper-container {
+        height: 83vw;
+        top: inherit;
+      }
       .image-container {
         width: 94vw;
         height: 77vw;
@@ -270,10 +271,10 @@ m-becommerce {
         background-repeat: no-repeat;
         background-position: center;
         // Debug
-        background-color: #949494;
+        // background-color: #949494;
       }
       .swiper-container-horizontal>.swiper-pagination {
-        bottom: 0;
+        bottom: 5px;
       }
     }
     .title{
