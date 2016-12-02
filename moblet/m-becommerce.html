@@ -23,23 +23,30 @@ unavaliable="error"
         >
         <div class="store-menu">
           <div
+          ng-click="goToStorePage('home')"
           class="menu-button m-theme-button"
-          ng-class="{'selected' : isButtonHomeActive }"
+          ng-class="{'selected' : storePage.home }"
           type="button"
           name="button"
           >
           Home</div>
           <div
+          ng-click="goToStorePage('categories')"
           class="menu-button m-theme-button"
-          ng-class="{'selected' : isButtonCategoriesActive }"
+          ng-class="{'selected' : storePage.categories }"
           type="button"
           name="button"
           >
           Categorias</div>
         </div>
       </div>
+      <!-- ####################### HOME PAGE ############################# -->
       <!-- BANNER -->
-      <div id="banner-container" class="banner bottom-border">
+      <div
+      ng-if="storePage.home"
+      id="banner-container"
+      class="banner bottom-border"
+      >
         <div ng-repeat="banner in banners.products | limitTo: banners.limit">
           <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
         </div>
@@ -59,7 +66,7 @@ unavaliable="error"
       <!-- SECTIONS -->
       <div
       ng-repeat="(sectionIndex, section) in sections"
-      ng-if="section.hasProducts"
+      ng-if="section.hasProducts && storePage.home"
       class="product-group bottom-border main-padding"
       id="section-{{ sectionIndex }}"
       >
@@ -129,13 +136,20 @@ unavaliable="error"
           <i class="icon ion-chevron-down"></i>
         </div>
       </div>
+      <!-- ####################### CATEGORIES PAGE ####################### -->
+      <div
+      ng-if="storePage.categories"
+      class="categories"
+      >
+      OI
+      </div>
     </div>
     <!-- ################################################################## -->
-    <!-- ########################## PRODUCT VIEW ########################## -->
+    <!-- ######################## PRODUCT VIEW ############################ -->
     <!-- ################################################################## -->
     <div
     ng-if="view === page.PRODUCT"
-    class="product"
+    class="product m-theme-null-background"
     >
       <div class="detail-container">
         <!-- PRODUCT SLIDER -->
@@ -305,10 +319,12 @@ unavaliable="error"
         </div>
       </div>
     </div>
-    <!-- CATEGORY VIEW -->
+    <!-- ################################################################## -->
+    <!-- ######################## CATEGORY VIEW ########################### -->
+    <!-- ################################################################## -->
     <div
     ng-if="view === page.CATEGORY"
-    class="category"
+    class="category m-theme-null-background"
     >
     </div>
   </m-content>

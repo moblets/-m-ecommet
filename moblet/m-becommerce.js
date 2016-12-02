@@ -28,47 +28,93 @@ module.exports = {
     window.malbumImageLoaded = function(element) {
       element.parentElement.classList.add("loaded");
     };
-
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ENUMS AND GLOBAL VARS * ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+    // Pages ENUM
     var page = {
       STORE: 'store',
-      CATEGORY: 'category',
+      CATEGORIES: 'categories',
       SUBCATEGORY: 'subcategory',
       PRODUCT: 'product',
       CART: 'cart'
     };
 
-    var menuButton = {
-      HOME: 'isButtonHomeActive',
-      CATEGORIES: 'isButtonCategoriesActive'
+    // End points ENUM
+    var endPoint = {
+      STORE: 'common/conf/store/',
+      // banner: 'app_banner/list/section/',
+      BANNER: 'slider/list/section/',
+      CART: 'cart/',
+      SECTIONS: 'section/',
+      _DETAIL: function(productId) {
+        return 'product/detail/' + productId;
+      },
+      _SIMILAR: function(productId) {
+        return 'product/list/similar/' +
+          productId;
+      },
+      _SHIPPING: function(zipCode, productId) {
+        return 'cart/shipping-list/' +
+          zipCode + '/' + productId + '/1';
+      }
     };
 
+    // Platform ENUM
     var platform = {
       ANDROID: 'android',
       IOS: 'ios'
     };
 
-    var groupLimit = 4;
+    // Store page ENUM
+    var storePage = {
+      HOME: 'home',
+      CATEGORIES: 'categories',
+      SEARCH: 'search'
+    };
 
+    // Limit for the number of products shown initialy (allways in pairs)
+    var groupLimit = 2 * 2;
+
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** HELPERS  ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     var helpers = {
+      /**
+       * Display the 'no content' view
+       * @param  {String} err The error
+       */
       error: function(err) {
         $scope.isLoading = false;
         $scope.error = true;
         $scope.noContent = true;
         console.error(err);
       },
+      /**
+       * Localize the numbers into Brazilian currency strings
+       * @param  {Number} value The numeric value to be converted
+       * @return {String}       The number with R$ and Brazilian thousands and
+       *                        decimal separators
+       */
       localizeCurrency: function(value) {
         var corrected = $filter('currency')(value, "R$", 2);
         var splited = corrected.split('.');
         var localized = splited[0].replace(',', '.') + ',' + splited[1];
         return localized;
       },
-      colors: function() {
+      /**
+       * Put the theme colors in the $scope
+       */
+      setColors: function() {
         var colors = $mAppDef().load().colors;
         colors.darker = $mTheme.shadeColor(colors.header_color, -0.2);
         colors.lighter = $mTheme.shadeColor(colors.header_color, 0.2);
-        return colors;
+        $scope.colors = colors;
       },
-      addCartContextualAction: function() {
+      /**
+       * Create the cart contextual action (icon in header)
+       */
+      setCartContextualAction: function() {
         var icons = ["ion-ios-cart", "ion-android-cart"];
         $mContextualActions.add(
           $scope.page.page_id,
@@ -84,20 +130,29 @@ module.exports = {
           }
         );
       },
+      /**
+       * Scroll to an HTML specific id
+       * @param  {String} id The html id
+       */
       scrollToId: function(id) {
         var top = document.getElementById(id).offsetTop;
         $ionicScrollDelegate.scrollTo(0, top, true);
       },
-      setProductPrice: function(products) {
-        // var responseList = products;
+      /**
+       * Localize a list of products to Brazilian currency and number
+       * @param {Array} products The list of products to be localized and the
+       *                         promotion set to true or false
+       */
+      setProductsPriceAndPromotion: function(products) {
         for (var i = 0; i < products.length; i++) {
+          products[i].valueTo = helpers.localizeCurrency(
+            products[i].valueTo);
+
           if (products[i].valueFrom &&
             products[i].valueFrom > products[i].valueTo) {
             products[i].hasPromotion = true;
             products[i].valueFrom = helpers.localizeCurrency(
               products[i].valueFrom);
-            products[i].valueTo = helpers.localizeCurrency(
-              products[i].valueTo);
           } else {
             products[i].hasPromotion = false;
           }
@@ -107,7 +162,8 @@ module.exports = {
        * Change a section's ng-repeat limit to show all products
        * @param  {Object} productGroup The $scope product group with it's
        *                               products
-       * @param  {String} groupId      The html id of the product group
+       * @param  {String} groupId      The html id of the product group used to
+       *                               scroll to the first product
        */
       productGroupLimitSwap: function(productGroup, groupId) {
         if (productGroup.hasMoreProducts === true) {
@@ -122,18 +178,40 @@ module.exports = {
         // Scroll to position
         helpers.scrollToId(groupId + '-product-0');
       },
-      createProductGroup: function(name, data) {
-        helpers.setProductPrice(data);
+      /**
+       * Create a product group object
+       * @param  {String} name     The name of the group
+       * @param  {Array} products  The list of products
+       * @example The product group object has the following structure
+       * {
+       *  name: {String}             The group name
+       *  limit: {Number}            The number of products that will be shown
+       *                             in the list
+       *  hasProducts: {Boolean}     True is the list has 1 or more products
+       *  hasMoreProducts: {Boolean} Based on the limit and the total number of
+       *                             products
+       *  showSwapButton: {Boolean}  True if the list has more products than
+       *                             the original limit
+       *  products: {Array}          The list of products in the group
+       * }
+       * @return {Object}          The product group
+       */
+      createProductGroup: function(name, products) {
+        helpers.setProductsPriceAndPromotion(products);
+
         var productGroup = {
           name: name,
-          limit: data.length < groupLimit ? data.length : groupLimit,
-          hasProducts: data.length > 0,
-          hasMoreProducts: data.length > groupLimit,
-          showSwapButton: data.length > groupLimit,
-          products: data
+          limit: products.length < groupLimit ? products.length : groupLimit,
+          hasProducts: products.length > 0,
+          hasMoreProducts: products.length > groupLimit,
+          showSwapButton: products.length > groupLimit,
+          products: products
         };
         return productGroup;
       },
+      /**
+       * DEBUG ONLY - Clear the Browser log
+       */
       clearLog: function() {
         // // CLEAR CONSOLE
         if (typeof console._commandLineAPI !== 'undefined') {
@@ -146,6 +224,10 @@ module.exports = {
 
         console.API.clear();
       },
+      /**
+       * Open or close the accordion
+       * @param  {String} accordionToggleName The $scope's accordion
+       */
       accordionSwap: function(accordionToggleName) {
         $scope[accordionToggleName] = !$scope[accordionToggleName];
 
@@ -156,7 +238,14 @@ module.exports = {
       }
     };
 
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** APP MODEL * ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     var appModel = {
+      /**
+       * Load the app def and sets each store api in the $scope.instanceData
+       * @return {Promise} Resolve after the app def is loaded and all instance is saved
+       */
       loadInstanceData: function() {
         var deferred = $q.defer();
         var dataLoadOptions = {
@@ -165,30 +254,7 @@ module.exports = {
 
         $mDataLoader.load($scope.moblet, dataLoadOptions)
           .then(function(data) {
-            $scope.instanceData = {
-              apiUrl: data.apiUrl,
-              clientUrl: data.clientUrl,
-              store: data.apiUrl + 'common/conf/store/',
-              // banner: data.apiUrl + 'app_banner/list/section/',
-              banner: data.apiUrl + 'slider/list/section/',
-              cart: data.apiUrl + 'cart/',
-              sections: {
-                section3: data.apiUrl + 'product/list/section/3/',
-                section4: data.apiUrl + 'product/list/section/4/',
-                section5: data.apiUrl + 'product/list/section/5/'
-              },
-              detail: function(productId) {
-                return data.apiUrl + 'product/detail/' + productId;
-              },
-              similar: function(productId) {
-                return data.apiUrl + 'product/list/similar/' +
-                  productId;
-              },
-              shipping: function(zipCode, productId) {
-                return data.apiUrl + 'cart/shipping-list/' +
-                  zipCode + '/' + productId + '/1';
-              }
-            };
+            $scope.apiUrl = data.apiUrl;
             deferred.resolve();
           })
           .catch(function(err) {
@@ -197,9 +263,14 @@ module.exports = {
           });
         return deferred.promise;
       },
-      getData: function(url) {
+      /**
+       * [getData description]
+       * @param  {String} endpoint String (use it from the object endPoint)
+       * @return {Promise}     The API response after loaded
+       */
+      getData: function(endpoint) {
         var deferred = $q.defer();
-        $http.get(url)
+        $http.get($scope.apiUrl + endpoint)
           .then(
             function(response) {
               deferred.resolve(response);
@@ -213,24 +284,23 @@ module.exports = {
       }
     };
 
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** NAVIAGTION CONTROLLER * ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     navigationController = {
       /**
-       * Got to a product's page
-       * @param  {Number} productId The product ID
+       * Go to a product's page
+       * @param  {String} productId The product ID
        */
       goToProduct: function(productId) {
         $stateParams.detail = page.PRODUCT + '&' + productId;
         $state.go('pages', $stateParams);
       }
-    /**
-     * Go to the highlights page
-     * @return {[type]} [description]
-     */
-    // goToHighlights: function() {
-    //   $stateParams.detail = page.HIGHLIGHTS;
-    //   $state.go('pages', $stateParams);
-    // },
     };
+
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** STORE CONTROLLER  ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     var storeController = {
       /**
        * Change the banners ng-repeat limit to show all banners
@@ -248,13 +318,27 @@ module.exports = {
       },
 
       /**
-       * Show the moblet main view
+       * Go to a page inside the store view
+       * @param {String} page The store page to show
+       */
+      goToStorePage: function(page) {
+        console.log(page);
+        for (var cPage in storePage) {
+          if (storePage.hasOwnProperty(cPage)) {
+            $scope.storePage[storePage[cPage]] = page === storePage[cPage];
+          }
+        }
+        console.log($scope.storePage);
+      },
+
+      /**
+       * Show the store view
        */
       showView: function() {
         $scope.sections = [];
 
         var finished = 0;
-        var totalLoad = 5;
+        var totalLoad = 3;
 
         var finishedLoading = function() {
           finished += 1;
@@ -262,8 +346,15 @@ module.exports = {
             // Set the STORE functions
             $scope.productGroupLimitSwap = helpers.productGroupLimitSwap;
             $scope.bannersLimitSwap = storeController.bannersLimitSwap;
-            $scope[menuButton.HOME] = true;
-            $scope[menuButton.CATEGORIES] = false;
+
+            // Create the store page subviews status object and navigation
+            // function
+            $scope.storePage = {};
+            $scope.storePage[storePage.HOME] = true;
+            $scope.storePage[storePage.CATEGORIES] = false;
+            $scope.storePage[storePage.SEARCH] = false;
+            $scope.goToStorePage = storeController.goToStorePage;
+            console.log($scope.storePage);
 
             // Set error and emptData to false
             $scope.error = false;
@@ -274,7 +365,7 @@ module.exports = {
           }
         };
 
-        appModel.getData($scope.instanceData.store)
+        appModel.getData(endPoint.STORE)
           .then(function(response) {
             $scope.store = response.data;
             $scope.categories = response.data.headerJson.headerCategoryJsons;
@@ -286,7 +377,8 @@ module.exports = {
           .catch(function(err) {
             helpers.error(err);
           });
-        appModel.getData($scope.instanceData.banner)
+
+        appModel.getData(endPoint.BANNER)
           .then(function(response) {
             $scope.banners = {
               limit: 1,
@@ -302,34 +394,16 @@ module.exports = {
           .catch(function(err) {
             helpers.error(err);
           });
-        appModel.getData($scope.instanceData.sections.section3)
+
+        appModel.getData(endPoint.SECTIONS)
           .then(function(response) {
-            $scope.sections[0] = helpers.createProductGroup(
-              'Vitrine 1',
-              response.data
-            );
-            finishedLoading();
-          })
-          .catch(function(err) {
-            helpers.error(err);
-          });
-        appModel.getData($scope.instanceData.sections.section4)
-          .then(function(response) {
-            $scope.sections[1] = helpers.createProductGroup(
-              'Vitrine 2',
-              response.data
-            );
-            finishedLoading();
-          })
-          .catch(function(err) {
-            helpers.error(err);
-          });
-        appModel.getData($scope.instanceData.sections.section5)
-          .then(function(response) {
-            $scope.sections[2] = helpers.createProductGroup(
-              'Vitrine 3',
-              response.data
-            );
+            for (var i = 0; i < response.data.length; i++) {
+              var section = response.data[i];
+              $scope.sections[section.position] = helpers.createProductGroup(
+                section.name,
+                section.offers
+              );
+            }
             finishedLoading();
           })
           .catch(function(err) {
@@ -338,17 +412,23 @@ module.exports = {
       }
     };
 
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** PRODUCT CONTROLLER * ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     var productController = {
+      /**
+       * Show the product view
+       * @param {String} productId The id of the product
+       */
       showView: function(productId) {
-        appModel.getData($scope.instanceData.detail(productId))
+        appModel.getData(endPoint._DETAIL(productId))
           .then(function(response) {
             // Product
-            console.log(response.data);
             $scope.product = response.data;
             return productId;
           })
           .then(function(productId) {
-            appModel.getData($scope.instanceData.similar(productId))
+            appModel.getData(endPoint._SIMILAR(productId))
               .then(function(response) {
                 // Similar
                 if (response.data.length > 0) {
@@ -358,7 +438,6 @@ module.exports = {
                     response.data
                   );
                 }
-                console.log($scope.similar);
 
                 $scope.showDescription = false;
                 $scope.showTechDetails = false;
@@ -373,6 +452,9 @@ module.exports = {
             helpers.error(err);
           });
       },
+      /**
+       * Create the product slider
+       */
       slider: function() {
         $scope.slider = {};
         $scope.slider.sliderDelegate = null;
@@ -384,11 +466,12 @@ module.exports = {
         };
         // Slider watcher
         $scope.$watch(
-          'slider.sliderDelegate', function(newVal, oldVal) {
-            if (newVal != null) {
+          'slider.sliderDelegate', function(newVal) {
+            if (newVal !== null) {
               $scope.slider.sliderDelegate
                 .on('slideChangeEnd', function() {
-                  $scope.slider.currentPage = $scope.slider.sliderDelegate.activeIndex;
+                  $scope.slider.currentPage = $scope.slider
+                                .sliderDelegate.activeIndex;
                   // use $scope.$apply() to refresh any content external to the slider
                   $scope.$apply();
                 });
@@ -397,22 +480,20 @@ module.exports = {
       }
     };
 
-    // var highlightsController = {
-    //   showView: function() {
-    //     $scope.banners = $rootScope.banners;
-    //     $scope.isLoading = false;
-    //   // $scope.banners = response.data;
-    //   }
-    // };
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ROUTER * ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
     var router = function() {
+      helpers.clearLog();
       console.debug('router()');
+
       // Set general status
-      helpers.addCartContextualAction();
       $scope.isLoading = true;
+      helpers.setCartContextualAction();
       appModel.loadInstanceData()
         .then(function() {
           // Make the general functions avalable in the scope
-          $scope.colors = helpers.colors();
+          helpers.setColors();
           $scope.page = page;
           $scope.platform = $mPlatform.isAndroid() ?
             platform.ANDROID :
@@ -430,7 +511,7 @@ module.exports = {
           if ($scope.view === page.STORE) {
             /** STORE PAGE **/
             storeController.showView();
-          } else if ($scope.view === page.CATEGORY) {
+          } else if ($scope.view === page.CATEGORIES) {
             /** PRODUCT PAGE **/
             console.debug('CATEGORY');
           } else if ($scope.view === page.SUBCATEGORY) {
@@ -439,7 +520,6 @@ module.exports = {
           } else if ($scope.view === page.PRODUCT) {
             /** SUBCATEGORY PAGE **/
             console.debug('PRODUCT');
-            helpers.clearLog();
 
             $scope.productId = $stateParams.detail;
             productController.showView($scope.productId);
