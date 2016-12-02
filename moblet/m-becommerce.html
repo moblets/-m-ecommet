@@ -5,6 +5,7 @@ inner-scroll="true"
 no-content="noContent"
 unavaliable="error"
 >
+  <style ng-bind="pageStyle"></style>
   <m-content>
     <!-- ################################################################## -->
     <!-- ######################## STORE VIEW (MAIN) ####################### -->
@@ -14,7 +15,10 @@ unavaliable="error"
     class="store m-theme-null-background"
     >
       <!-- SEARCH BAR -->
-			<div class="search-bar m-theme-bar-top {{ platform }}">
+			<div
+      ng-class="{ 'android': isAndroid, 'ios': isIos }"
+      class="search-bar m-theme-bar-top"
+      >
 				<input
         ng-model="search"
         class="search-input"
@@ -41,107 +45,123 @@ unavaliable="error"
         </div>
       </div>
       <!-- ####################### HOME PAGE ############################# -->
-      <!-- BANNER -->
       <div
       ng-if="storePage.home"
-      id="banner-container"
-      class="banner bottom-border"
       >
-        <div ng-repeat="banner in banners.products | limitTo: banners.limit">
-          <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
-        </div>
-        <!-- MORE BUTTON -->
+        <!-- BANNER -->
         <div
-          class="load-button"
-          ng-class="{
-            'load-more': banners.showMoreButton,
-            'load-less': !banners.showMoreButton
-          }"
-          ng-if="banners.hasMoreBanners"
-          ng-click="bannersLimitSwap()"
-          >
-          <i class="icon ion-chevron-down"></i>
-        </div>
-      </div>
-      <!-- SECTIONS -->
-      <div
-      ng-repeat="(sectionIndex, section) in sections"
-      ng-if="section.hasProducts && storePage.home"
-      class="product-group bottom-border main-padding"
-      id="section-{{ sectionIndex }}"
-      >
-        <h1
-        ng-bind="section.name"
-        class="section m-theme-text-color"
+        id="banner-container"
+        class="banner bottom-border"
         >
-        </h1>
-        <!-- PRODUCTS -->
-        <div class="products">
+          <div ng-repeat="banner in banners.products | limitTo: banners.limit">
+            <img ng-src="{{ banner.image }}" alt="{{ banner.alt }}" />
+          </div>
+          <!-- MORE BUTTON -->
           <div
-            ng-repeat="(productIndex, product) in section.products | limitTo: section.limit"
-            ng-click="goToProduct(product.id)"
-            class="product"
-            id="section-{{ sectionIndex }}-product-{{ productIndex }}"
+            class="load-button"
+            ng-class="{
+              'load-more': banners.showMoreButton,
+              'load-less': !banners.showMoreButton
+            }"
+            ng-if="banners.hasMoreBanners"
+            ng-click="bannersLimitSwap()"
             >
-              <!-- PRODUCT IMAGE -->
-              <div class="skeleton thumb-size">
-                <div
-                id="img-{{ product.id }}"
-                class="thumb"
-                ng-style="{'background-image':'url({{ product.thumbnail }})'}"
-                ></div>
-                <img
-                ng-src="{{ product.thumbnail }}"
-                onload="malbumImageLoaded(this)"
-                id="control-img-{{ product.id }}"
-                image-id="{{ product.id }}"
-                style="display:none"
-                />
-              </div>
-              <!-- PRODUCT NAME -->
-              <p class="name">
-                {{ product.name }}
-              </p>
-              <!-- PRODUCT PRICE -->
-              <p
-              ng-if="product.hasPromotion"
-              class="value value-from"
-              ng-bind="product.valueFrom"
-              >
-              </p>
-              <p
-              ng-if="product.hasPromotion"
-              class="value value-to m-theme-text-color"
-              ng-bind="product.valueTo"
-              >
-              </p>
-              <p
-              ng-if="!product.hasPromotion"
-              class="value m-theme-text-color"
-              ng-bind="product.valueTo"
-              >
-              </p>
+            <i class="icon ion-chevron-down"></i>
           </div>
         </div>
-        <!-- MORE BUTTON -->
+        <!-- SECTIONS -->
         <div
-          class="load-button"
-          ng-class="{
-            'load-more': section.hasMoreProducts,
-            'load-less': !section.hasMoreProducts
-          }"
-          ng-if="section.showSwapButton"
-          ng-click="productGroupLimitSwap(section, 'section-' + sectionIndex)"
+        ng-repeat="(sectionIndex, section) in sections"
+        ng-if="section.hasProducts"
+        class="product-group bottom-border main-padding"
+        id="section-{{ sectionIndex }}"
+        >
+          <h1
+          ng-bind="section.name"
+          class="section m-theme-text-color"
           >
-          <i class="icon ion-chevron-down"></i>
+          </h1>
+          <!-- PRODUCTS -->
+          <div class="products">
+            <div
+              ng-repeat="(productIndex, product) in section.products | limitTo: section.limit"
+              ng-click="goToProduct(product.id)"
+              class="product"
+              id="section-{{ sectionIndex }}-product-{{ productIndex }}"
+              >
+                <!-- PRODUCT IMAGE -->
+                <div class="skeleton thumb-size">
+                  <div
+                  id="img-{{ product.id }}"
+                  class="thumb"
+                  ng-style="{'background-image':'url({{ product.thumbnail }})'}"
+                  ></div>
+                  <img
+                  ng-src="{{ product.thumbnail }}"
+                  onload="malbumImageLoaded(this)"
+                  id="control-img-{{ product.id }}"
+                  image-id="{{ product.id }}"
+                  style="display:none"
+                  />
+                </div>
+                <!-- PRODUCT NAME -->
+                <p class="name">
+                  {{ product.name }}
+                </p>
+                <!-- PRODUCT PRICE -->
+                <p
+                ng-if="product.hasPromotion"
+                class="value value-from"
+                ng-bind="product.valueFrom"
+                >
+                </p>
+                <p
+                ng-if="product.hasPromotion"
+                class="value value-to m-theme-text-color"
+                ng-bind="product.valueTo"
+                >
+                </p>
+                <p
+                ng-if="!product.hasPromotion"
+                class="value m-theme-text-color"
+                ng-bind="product.valueTo"
+                >
+                </p>
+            </div>
+          </div>
+          <!-- MORE BUTTON -->
+          <div
+            class="load-button"
+            ng-class="{
+              'load-more': section.hasMoreProducts,
+              'load-less': !section.hasMoreProducts
+            }"
+            ng-if="section.showSwapButton"
+            ng-click="productGroupLimitSwap(section, 'section-' + sectionIndex)"
+            >
+            <i class="icon ion-chevron-down"></i>
+          </div>
         </div>
       </div>
       <!-- ####################### CATEGORIES PAGE ####################### -->
       <div
       ng-if="storePage.categories"
-      class="categories"
       >
-      OI
+        <div class="list">
+    			<div
+          ng-repeat="category in categories"
+          class="item"
+          >
+            <h2 ng-bind="category.name"></h2>
+            <i
+            ng-class="{
+              'ion-chevron-down': isAndroid,
+              'ion-chevron-right': isIos
+            }"
+            class="right"
+            ></i>
+          </div>
+    		</div>
       </div>
     </div>
     <!-- ################################################################## -->
@@ -319,18 +339,5 @@ unavaliable="error"
         </div>
       </div>
     </div>
-    <!-- ################################################################## -->
-    <!-- ######################## CATEGORY VIEW ########################### -->
-    <!-- ################################################################## -->
-    <div
-    ng-if="view === page.CATEGORY"
-    class="category m-theme-null-background"
-    >
-    </div>
   </m-content>
-  <style>
-    .android .store-menu .selected {
-      border-bottom-color: {{ colors.darker}}!important;
-    }
-  </style>
 </m-moblet>

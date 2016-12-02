@@ -1,6 +1,7 @@
 m-becommerce {
   @color-light-grey: #EDEDED;
   @color-medium-grey: #E1E1E1;
+  @color-medium-light-grey: #A2A2A2;
   @color-dark-grey: #4A4A4A;
   @product-font-size: 13px;
   @product-line-height: 1.4;
@@ -49,7 +50,7 @@ m-becommerce {
   .store-menu {
     .menu-button {
       font-size: 14px;
-      padding-bottom: 10px;
+      padding: 10px 0;
       letter-spacing: 0;
     }
   }
@@ -61,10 +62,9 @@ m-becommerce {
     height: 42px;
   }
   .store-menu {
-    padding-top: 8px;
     .menu-button {
       font-size: 16px;
-      padding-bottom: 18px;
+      padding: 18px 0;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       font-weight: 500;
@@ -76,15 +76,32 @@ m-becommerce {
     }
   }
 }
-.loadMore {
-
+.list {
+  .item {
+    padding: 13px 16px;
+    h2 {
+      /* Acessórios Automotiv: */
+      font-size: 15px;
+      color: black;
+      letter-spacing: 0.53px;
+      font-size: 15px;
+      width: 87vw;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+    i {
+      color: @color-medium-light-grey;
+    }
+  }
 }
 .search-bar {
   display: block;
   overflow: auto;
   font-family: "Helvetica Neue",Roboto,"Segoe UI",sans-serif;
   .search-input {
-    margin: 10px;
+    margin: 10px 10px 0 10px;
     width: ~"calc(100% - 20px)";
     padding: 0 10px;
     background: #FFFFFF;

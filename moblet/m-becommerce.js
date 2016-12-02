@@ -235,6 +235,17 @@ module.exports = {
         $timeout(function() {
           $ionicScrollDelegate.resize();
         }, 350);
+      },
+      /**
+       * Get the themes colors and create the style to be injected on the page
+       */
+      injectStyle: function() {
+        if ($scope.colors === undefined) {
+          helpers.setColors();
+        }
+        $scope.pageStyle = '.android .store-menu .selected {' +
+          'border-bottom-color: ' + $scope.colors.darker + '!important;' +
+          '}';
       }
     };
 
@@ -322,13 +333,12 @@ module.exports = {
        * @param {String} page The store page to show
        */
       goToStorePage: function(page) {
-        console.log(page);
         for (var cPage in storePage) {
           if (storePage.hasOwnProperty(cPage)) {
             $scope.storePage[storePage[cPage]] = page === storePage[cPage];
           }
         }
-        console.log($scope.storePage);
+        $ionicScrollDelegate.resize();
       },
 
       /**
@@ -354,7 +364,6 @@ module.exports = {
             $scope.storePage[storePage.CATEGORIES] = false;
             $scope.storePage[storePage.SEARCH] = false;
             $scope.goToStorePage = storeController.goToStorePage;
-            console.log($scope.storePage);
 
             // Set error and emptData to false
             $scope.error = false;
@@ -370,8 +379,7 @@ module.exports = {
             $scope.store = response.data;
             $scope.categories = response.data.headerJson.headerCategoryJsons;
 
-            // Save the categories in the root scope
-            $rootScope.categories = $scope.categories;
+            console.log($scope.categories);
             finishedLoading();
           })
           .catch(function(err) {
@@ -493,11 +501,10 @@ module.exports = {
       appModel.loadInstanceData()
         .then(function() {
           // Make the general functions avalable in the scope
-          helpers.setColors();
+          helpers.injectStyle();
           $scope.page = page;
-          $scope.platform = $mPlatform.isAndroid() ?
-            platform.ANDROID :
-            platform.IOS;
+          $scope.isAndroid = $mPlatform.isAndroid();
+          $scope.isIos = $mPlatform.isIOS();
 
           // Make all navigation available in the scope
           $scope.goToProduct = navigationController.goToProduct;
