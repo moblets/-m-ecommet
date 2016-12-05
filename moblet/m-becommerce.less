@@ -79,20 +79,31 @@ m-becommerce {
 .list {
   .item {
     padding: 13px 16px;
+    font-size: 15px;
+    letter-spacing: 0.53px;
     h2 {
-      /* Acessórios Automotiv: */
-      font-size: 15px;
       color: black;
-      letter-spacing: 0.53px;
-      font-size: 15px;
-      width: 87vw;
+      width: 77vw;
       margin: 0;
       padding: 0;
       display: inline-block;
       vertical-align: bottom;
     }
+    p {
+      color: @color-medium-light-grey;
+      font-size: 15px;
+      width: 10vw;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      vertical-align: bottom;
+      text-align: right;
+    }
+
     i {
       color: @color-medium-light-grey;
+      position: relative;
+      top: 2px;
     }
   }
 }
@@ -148,6 +159,86 @@ m-becommerce {
     font-size: 16px;
   }
 }
+.category {
+  :nth-last-child(1).product, :nth-last-child(2).product {
+    border-bottom: none;
+  }
+  .product {
+    width: 100vw;
+    height: 36vw;
+    background: #FFFFFF;
+    color: @color-dark-grey;
+    padding: 3vw;
+    border-bottom: 1px solid @color-light-grey;
+    animation-duration: .3s;
+    .skeleton{
+  		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
+  		background-size: 1000% 1000%;
+  		-webkit-animation: skeleton 20.22s ease infinite;
+  		-moz-animation: skeleton 20.22s ease infinite;
+  		animation: skeleton 20.22s ease infinite;
+      float: left;
+  	}
+  	.thumb-size{
+      width: 35vw;
+      height: 26vw;
+      margin-right: 2vw;
+      padding: 0;
+  		.thumb{
+  			opacity: 0;
+  		}
+  	}
+  	.thumb-size.loaded{
+  		.thumb{
+        background-size: contain;
+        background-repeat: no-repeat;
+  			opacity: 1;
+  		}
+  	}
+    .thumb{
+  		width: 100%;
+  		height: 100%;
+  		background-color: #FFFFFF;
+      // Debug
+      background-color: #949494;
+  		background-size: cover;
+  		-webkit-transition: opacity 0.5s ease-out; /* Safari */
+  		transition: opacity 0.5s ease-out;
+      background-position: center;
+  	}
+    .info {
+      .name {
+        font-size: @product-font-size;
+        width: 57vw;
+        display: -webkit-box;
+        -webkit-line-clamp: @product-lines-to-show;
+        -webkit-box-orient: vertical;
+        white-space: normal;
+        height: @product-font-size*@product-line-height*@product-lines-to-show;
+        line-height: @product-line-height;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2vw;
+      }
+      .value {
+        line-height: 18px;
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: bold;
+        padding: 0;
+        margin: 0;
+      }
+      .value-from {
+        font-size: 11px;
+        line-height: 16px;
+        font-weight: normal;;
+        text-decoration: line-through;
+      }
+      .value-to {
+      }
+    }
+  }
+}
 .products {
   display: block;
   overflow: auto;
@@ -179,7 +270,7 @@ m-becommerce {
     animation-duration: .3s;
     .skeleton{
   		background: linear-gradient(270deg, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0, #b8b8b8, #e0e0e0);
-  		background-size: 10000% 10000%;
+  		background-size: 1000% 1000%;
   		-webkit-animation: skeleton 20.22s ease infinite;
   		-moz-animation: skeleton 20.22s ease infinite;
   		animation: skeleton 20.22s ease infinite;
@@ -234,8 +325,6 @@ m-becommerce {
       line-height: 16px;
       font-weight: normal;;
       text-decoration: line-through;
-    }
-    .value-to {
     }
   }
 }

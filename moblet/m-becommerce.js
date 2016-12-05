@@ -34,8 +34,8 @@ module.exports = {
     // Pages ENUM
     var page = {
       STORE: 'store',
-      CATEGORIES: 'categories',
-      SUBCATEGORY: 'subcategory',
+      CATEGORY: 'category',
+      CATEGORY_PRODUCTS: 'categoryProducts',
       PRODUCT: 'product',
       CART: 'cart'
     };
@@ -47,6 +47,10 @@ module.exports = {
       BANNER: 'slider/list/section/',
       CART: 'cart/',
       SECTIONS: 'section/',
+      _CATEGORY: function(categoryId, page, items) {
+        return 'product/list/category/' + categoryId +
+         '?page=' + page + '&itemsPerPage=' + items;
+      },
       _DETAIL: function(productId) {
         return 'product/detail/' + productId;
       },
@@ -58,12 +62,6 @@ module.exports = {
         return 'cart/shipping-list/' +
           zipCode + '/' + productId + '/1';
       }
-    };
-
-    // Platform ENUM
-    var platform = {
-      ANDROID: 'android',
-      IOS: 'ios'
     };
 
     // Store page ENUM
@@ -144,18 +142,33 @@ module.exports = {
        *                         promotion set to true or false
        */
       setProductsPriceAndPromotion: function(products) {
+        var createNumericValue = function(val) {
+          console.log(val, typeof val);
+          if (typeof val === 'string') {
+            val = val.replace("R$", '');
+            val = val.replace('.', '');
+            val = val.replace(',', '.');
+            val = Number(val);
+            console.log(val);
+          }
+          return val;
+        };
+
         for (var i = 0; i < products.length; i++) {
-          products[i].valueTo = helpers.localizeCurrency(
-            products[i].valueTo);
+          console.log(products[i]);
+          products[i].valueFrom = createNumericValue(products[i].valueFrom);
+          products[i].valueTo = createNumericValue(products[i].valueTo);
 
           if (products[i].valueFrom &&
             products[i].valueFrom > products[i].valueTo) {
-            products[i].hasPromotion = true;
             products[i].valueFrom = helpers.localizeCurrency(
               products[i].valueFrom);
+            products[i].hasPromotion = true;
           } else {
             products[i].hasPromotion = false;
           }
+          products[i].valueTo = helpers.localizeCurrency(
+            products[i].valueTo);
         }
       },
       /**
@@ -306,6 +319,33 @@ module.exports = {
       goToProduct: function(productId) {
         $stateParams.detail = page.PRODUCT + '&' + productId;
         $state.go('pages', $stateParams);
+      },
+
+      /**
+       * Go to a category's page
+       * @param  {Object} category The category
+       */
+      goToCategory: function(category) {
+        if (category.hasSubCategories) {
+          $stateParams.detail = page.CATEGORY + '&' + category.id;
+        } else {
+          $stateParams.detail = page.CATEGORY_PRODUCTS + '&' + category.id;
+        }
+        $rootScope.category = category;
+        $state.go('pages', $stateParams);
+      },
+
+      /**
+       * Go to a page inside the store view
+       * @param {String} page The store page to show
+       */
+      goToStorePage: function(page) {
+        for (var cPage in storePage) {
+          if (storePage.hasOwnProperty(cPage)) {
+            $scope.storePage[storePage[cPage]] = page === storePage[cPage];
+          }
+        }
+        $ionicScrollDelegate.resize();
       }
     };
 
@@ -328,17 +368,53 @@ module.exports = {
         helpers.scrollToId('banner-container');
       },
 
-      /**
-       * Go to a page inside the store view
-       * @param {String} page The store page to show
-       */
-      goToStorePage: function(page) {
-        for (var cPage in storePage) {
-          if (storePage.hasOwnProperty(cPage)) {
-            $scope.storePage[storePage[cPage]] = page === storePage[cPage];
-          }
-        }
-        $ionicScrollDelegate.resize();
+      organizeCategories(categoriesData, first) {
+        var fillCategories = function fillCategories(data) {
+          var categories = [];
+          // Fill each category with the relecant data
+          data.forEach(cat => {
+            var category = {
+              name: cat.name,
+              // Check if there is only one subcategory with the same items that
+              // the parent and link to it directly
+              id: (cat.headerCategorySubJsons !== null &&
+                  cat.headerCategorySubJsons.length === 1 &&
+                  cat.headerCategorySubJsons[0]
+                    .productCount === cat.productCount) ?
+                  cat.headerCategorySubJsons[0].id :
+                  cat.id,
+              productsPage: false,
+              productCount: cat.productCount,
+              // Check if there is only one subcategory with the same items that
+              // the parent and don't set subcategories. If this only subcat
+              // has less items, show the subcategory
+              hasSubCategories: (cat.headerCategorySubJsons !== null &&
+                  cat.headerCategorySubJsons.length > 1 &&
+                  cat.headerCategorySubJsons[0]
+                    .productCount !== cat.productCount)
+            };
+            // If it has subCategories, fill it recursively
+            if (category.hasSubCategories) {
+              category.subCategories = fillCategories(
+                cat.headerCategorySubJsons,
+                false
+              );
+              if (!first && category.subCategories.length > 1) {
+                category.subCategories.unshift({
+                  name: 'Todos',
+                  productsPage: true,
+                  id: cat.id,
+                  productCount: cat.productCount,
+                  hasSubCategories: false
+                });
+              }
+            }
+            categories.push(category);
+          });
+          return categories;
+        };
+
+        $scope.categories = fillCategories(categoriesData, true);
       },
 
       /**
@@ -363,7 +439,7 @@ module.exports = {
             $scope.storePage[storePage.HOME] = true;
             $scope.storePage[storePage.CATEGORIES] = false;
             $scope.storePage[storePage.SEARCH] = false;
-            $scope.goToStorePage = storeController.goToStorePage;
+            $scope.goToStorePage = navigationController.goToStorePage;
 
             // Set error and emptData to false
             $scope.error = false;
@@ -377,9 +453,9 @@ module.exports = {
         appModel.getData(endPoint.STORE)
           .then(function(response) {
             $scope.store = response.data;
-            $scope.categories = response.data.headerJson.headerCategoryJsons;
+            storeController.organizeCategories(response.data.headerJson
+              .headerCategoryJsons);
 
-            console.log($scope.categories);
             finishedLoading();
           })
           .catch(function(err) {
@@ -395,8 +471,6 @@ module.exports = {
               products: response.data
             };
 
-            // Save the banners in the root scope
-            $rootScope.banners = $scope.banners;
             finishedLoading();
           })
           .catch(function(err) {
@@ -420,6 +494,52 @@ module.exports = {
       }
     };
 
+    /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** CATEGORY CONTROLLER  ** ** ** ** ** ** ** **
+     ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+    var categoryController = {
+      showList: function(category) {
+        console.log('Show the list!!!');
+        $scope.category = category;
+        $scope.isLoading = false;
+      },
+      showProducts: function(category) {
+        console.log('LOAD THE PRODUCTS!!!');
+        var maxItems = 120;
+        var products = [];
+        var calls = Math.floor(category.productCount / maxItems) + 1;
+
+        var mergeProducts = function(newProducts) {
+          products = products.concat(newProducts);
+        };
+
+        var callsMade = 0;
+        var finish = function() {
+          callsMade++;
+          if (callsMade === calls) {
+            helpers.setProductsPriceAndPromotion(products);
+            $scope.products = products;
+            $scope.isLoading = false;
+          }
+        };
+
+        for (var i = 0; i < calls; i++) {
+          var items = i + 1 === calls ?
+                      category.productCount % maxItems :
+                      maxItems;
+
+          appModel.getData(endPoint._CATEGORY(category.id, i + 1, items))
+          .then(
+            function(response) {
+              mergeProducts(response.data.products);
+              finish();
+            })
+          .catch(function(err) {
+            helpers.error(err);
+          });
+        }
+      }
+    };
     /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
      ** ** ** ** ** ** ** ** PRODUCT CONTROLLER * ** ** ** ** ** ** ** **
      ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
@@ -508,7 +628,7 @@ module.exports = {
 
           // Make all navigation available in the scope
           $scope.goToProduct = navigationController.goToProduct;
-          // $scope.goToCategory = navigationController.goToCategory;
+          $scope.goToCategory = navigationController.goToCategory;
 
           var detail = $stateParams.detail.split('&');
           $scope.view = detail[0] === '' ? page.STORE : detail[0];
@@ -518,16 +638,16 @@ module.exports = {
           if ($scope.view === page.STORE) {
             /** STORE PAGE **/
             storeController.showView();
-          } else if ($scope.view === page.CATEGORIES) {
-            /** PRODUCT PAGE **/
+          } else if ($scope.view === page.CATEGORY) {
             console.debug('CATEGORY');
-          } else if ($scope.view === page.SUBCATEGORY) {
-            /** CATEGORY PAGE **/
-            console.debug('SUBCATEGORY');
+            categoryController.showList($rootScope.category);
+          } else if ($scope.view === page.CATEGORY_PRODUCTS) {
+            console.debug('CATEGORY');
+            var category = $rootScope.category;
+            categoryController.showProducts(category);
           } else if ($scope.view === page.PRODUCT) {
             /** SUBCATEGORY PAGE **/
             console.debug('PRODUCT');
-
             $scope.productId = $stateParams.detail;
             productController.showView($scope.productId);
           } else if ($scope.view === page.CART) {

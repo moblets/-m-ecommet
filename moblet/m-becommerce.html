@@ -116,14 +116,8 @@ unavaliable="error"
                 >
                 </p>
                 <p
-                ng-if="product.hasPromotion"
-                class="value value-to m-theme-text-color"
-                ng-bind="product.valueTo"
-                >
-                </p>
-                <p
-                ng-if="!product.hasPromotion"
-                class="value m-theme-text-color"
+                ng-class="{ 'm-theme-text-color': product.hasPromotion }"
+                class="value"
                 ng-bind="product.valueTo"
                 >
                 </p>
@@ -143,25 +137,89 @@ unavaliable="error"
           </div>
         </div>
       </div>
-      <!-- ####################### CATEGORIES PAGE ####################### -->
+      <!-- ####################### CATEGORIES LIST ####################### -->
       <div
       ng-if="storePage.categories"
       >
         <div class="list">
     			<div
           ng-repeat="category in categories"
+          ng-click="goToCategory(category)"
           class="item"
           >
             <h2 ng-bind="category.name"></h2>
-            <i
-            ng-class="{
-              'ion-chevron-down': isAndroid,
-              'ion-chevron-right': isIos
-            }"
-            class="right"
-            ></i>
+            <p ng-bind="'(' + category.productCount + ')'"></p>
+            <i class="right ion-chevron-right"></i>
           </div>
     		</div>
+      </div>
+    </div>
+    <!-- ################################################################## -->
+    <!-- ######################## CATEGORY LIST ########################### -->
+    <!-- ################################################################## -->
+    <div
+    ng-if="view === page.CATEGORY"
+    class="category m-theme-null-background"
+    >
+      <div class="list">
+        <div
+        ng-repeat="category in category.subCategories"
+        ng-click="goToCategory(category)"
+        class="item"
+        >
+          <h2 ng-bind="category.name"></h2>
+          <p ng-bind="'(' + category.productCount + ')'"></p>
+          <i class="right ion-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <!-- ################################################################## -->
+    <!-- ######################## CATEGORY PRODUCTS ####################### -->
+    <!-- ################################################################## -->
+    <div
+    ng-if="view === page.CATEGORY_PRODUCTS"
+    class="category m-theme-null-background"
+    >
+      <div
+        ng-repeat="(productIndex, product) in products"
+        ng-click="goToProduct(product.id)"
+        class="product"
+        id="category-{{ category.id }}-product-{{ productIndex }}"
+        >
+          <!-- PRODUCT IMAGE -->
+          <div class="skeleton thumb-size">
+            <div
+            id="img-{{ product.id }}"
+            class="thumb"
+            ng-style="{'background-image':'url({{ product.thumbnail }})'}"
+            ></div>
+            <img
+            ng-src="{{ product.thumbnail }}"
+            onload="malbumImageLoaded(this)"
+            id="control-img-{{ product.id }}"
+            image-id="{{ product.id }}"
+            style="display:none"
+            />
+          </div>
+          <div class="info">
+            <!-- PRODUCT NAME -->
+            <p class="name">
+              {{ product.name }}
+            </p>
+            <!-- PRODUCT PRICE -->
+            <p
+            ng-if="product.hasPromotion"
+            class="value value-from"
+            ng-bind="product.valueFrom"
+            >
+            </p>
+            <p
+            ng-class="{ 'm-theme-text-color': product.hasPromotion}"
+            class="value"
+            ng-bind="product.valueTo"
+            >
+            </p>
+          </div>
       </div>
     </div>
     <!-- ################################################################## -->
@@ -312,14 +370,8 @@ unavaliable="error"
               >
               </p>
               <p
-              ng-if="product.hasPromotion"
-              class="value value-to m-theme-text-color"
-              ng-bind="product.valueTo"
-              >
-              </p>
-              <p
-              ng-if="!product.hasPromotion"
-              class="value m-theme-text-color"
+              ng-class="{ 'm-theme-text-color': product.hasPromotion }"
+              class="value"
               ng-bind="product.valueTo"
               >
               </p>
