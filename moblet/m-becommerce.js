@@ -143,19 +143,16 @@ module.exports = {
        */
       setProductsPriceAndPromotion: function(products) {
         var createNumericValue = function(val) {
-          console.log(val, typeof val);
           if (typeof val === 'string') {
             val = val.replace("R$", '');
             val = val.replace('.', '');
             val = val.replace(',', '.');
             val = Number(val);
-            console.log(val);
           }
           return val;
         };
 
         for (var i = 0; i < products.length; i++) {
-          console.log(products[i]);
           products[i].valueFrom = createNumericValue(products[i].valueFrom);
           products[i].valueTo = createNumericValue(products[i].valueTo);
 
@@ -518,6 +515,8 @@ module.exports = {
           callsMade++;
           if (callsMade === calls) {
             helpers.setProductsPriceAndPromotion(products);
+
+            $scope.category = category;
             $scope.products = products;
             $scope.isLoading = false;
           }

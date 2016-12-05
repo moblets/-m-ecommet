@@ -207,18 +207,20 @@ unavaliable="error"
               {{ product.name }}
             </p>
             <!-- PRODUCT PRICE -->
-            <p
-            ng-if="product.hasPromotion"
-            class="value value-from"
-            ng-bind="product.valueFrom"
-            >
-            </p>
-            <p
-            ng-class="{ 'm-theme-text-color': product.hasPromotion}"
-            class="value"
-            ng-bind="product.valueTo"
-            >
-            </p>
+            <div class="price">
+              <div
+              ng-if="product.hasPromotion"
+              class="value value-from"
+              ng-bind="product.valueFrom"
+              >
+              </div>
+              <div
+              ng-class="{ 'm-theme-text-color': product.hasPromotion}"
+              class="value"
+              ng-bind="product.valueTo"
+              >
+            </div>
+            </div>
           </div>
       </div>
     </div>

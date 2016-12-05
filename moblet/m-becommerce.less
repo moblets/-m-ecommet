@@ -6,6 +6,7 @@ m-becommerce {
   @product-font-size: 13px;
   @product-line-height: 1.4;
   @product-lines-to-show: 2;
+  @category-product-lines-to-show: 3;
   // Animations
   @-webkit-keyframes skeleton {
     0%{background-position:0% 50%}
@@ -160,12 +161,12 @@ m-becommerce {
   }
 }
 .category {
-  :nth-last-child(1).product, :nth-last-child(2).product {
+  :nth-last-child(1).product {
     border-bottom: none;
   }
   .product {
     width: 100vw;
-    height: 36vw;
+    height: 32vw;
     background: #FFFFFF;
     color: @color-dark-grey;
     padding: 3vw;
@@ -178,11 +179,14 @@ m-becommerce {
   		-moz-animation: skeleton 20.22s ease infinite;
   		animation: skeleton 20.22s ease infinite;
       float: left;
+      &.loaded {
+        background: none;
+      }
   	}
   	.thumb-size{
       width: 35vw;
       height: 26vw;
-      margin-right: 2vw;
+      margin-right: 3vw;
       padding: 0;
   		.thumb{
   			opacity: 0;
@@ -200,41 +204,49 @@ m-becommerce {
   		height: 100%;
   		background-color: #FFFFFF;
       // Debug
-      background-color: #949494;
+      // background-color: #949494;
   		background-size: cover;
   		-webkit-transition: opacity 0.5s ease-out; /* Safari */
   		transition: opacity 0.5s ease-out;
       background-position: center;
   	}
     .info {
+        @name-hight: @product-font-size*@product-line-height*@category-product-lines-to-show;
+        width: 56vw;
+        white-space: normal;
+        float: left;
       .name {
         font-size: @product-font-size;
-        width: 57vw;
-        display: -webkit-box;
-        -webkit-line-clamp: @product-lines-to-show;
+        -webkit-line-clamp: @category-product-lines-to-show;
         -webkit-box-orient: vertical;
-        white-space: normal;
-        height: @product-font-size*@product-line-height*@product-lines-to-show;
+        height: @name-hight;
         line-height: @product-line-height;
         overflow: hidden;
         text-overflow: ellipsis;
         margin-bottom: 2vw;
       }
-      .value {
-        line-height: 18px;
-        font-size: 13px;
-        line-height: 18px;
-        font-weight: bold;
+      .price {
         padding: 0;
         margin: 0;
-      }
-      .value-from {
-        font-size: 11px;
-        line-height: 16px;
-        font-weight: normal;;
-        text-decoration: line-through;
-      }
-      .value-to {
+        position: relative;
+        height: ~"calc(24vw - @{name-hight})";
+        // Debug
+        // background-color: @color-light-grey;
+        display: table-cell;
+        vertical-align: bottom;
+        width: 56vw;
+        .value {
+          font-size: 15px;
+          line-height: 18px;
+          line-height: 18px;
+          font-weight: bold;
+        }
+        .value-from {
+          font-size: 11px;
+          line-height: 16px;
+          font-weight: normal;;
+          text-decoration: line-through;
+        }
       }
     }
   }
@@ -274,6 +286,9 @@ m-becommerce {
   		-webkit-animation: skeleton 20.22s ease infinite;
   		-moz-animation: skeleton 20.22s ease infinite;
   		animation: skeleton 20.22s ease infinite;
+      &.loaded {
+        background: none;
+      }
   	}
   	.thumb-size{
       width: 44vw;
