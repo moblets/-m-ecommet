@@ -17,7 +17,7 @@ unavaliable="error"
       <!-- SEARCH BAR -->
 			<div
       ng-class="{ 'android': isAndroid, 'ios': isIos }"
-      class="search-bar m-theme-bar-top"
+      class="header-bar m-theme-bar-top"
       >
 				<input
         ng-model="search"
@@ -25,7 +25,7 @@ unavaliable="error"
         name="products"
         placeholder="Buscar"
         >
-        <div class="store-menu">
+        <div class="header-menu">
           <div
           ng-click="goToStorePage('home')"
           class="menu-button m-theme-button"
@@ -161,6 +161,18 @@ unavaliable="error"
     ng-if="view === page.CATEGORY"
     class="category m-theme-null-background"
     >
+      <!-- SEARCH BAR -->
+			<div
+      ng-class="{ 'android': isAndroid, 'ios': isIos }"
+      class="header-bar m-theme-bar-top"
+      >
+				<input
+        ng-model="search"
+        class="search-input"
+        name="products"
+        placeholder="Buscar"
+        >
+      </div>
       <div class="list">
         <div
         ng-repeat="category in category.subCategories"
@@ -181,47 +193,79 @@ unavaliable="error"
     class="category m-theme-null-background"
     >
       <div
+      ng-class="{ 'android': isAndroid, 'ios': isIos }"
+      class="header-bar m-theme-bar-top"
+      >
+        <div class="header-menu">
+          <div
+          ng-click="goToStorePage('home')"
+          class="menu-button m-theme-button"
+          ng-class="{'selected' : storePage.home }"
+          type="button"
+          name="button"
+          >
+          {{ category.name }}</div>
+          <div
+          ng-click="goToStorePage('categories')"
+          class="menu-button m-theme-button"
+          ng-class="{'selected' : storePage.categories }"
+          type="button"
+          name="button"
+          >
+          Ordena ae</div>
+          <div
+          ng-click="goToStorePage('categories')"
+          class="search-button m-theme-button"
+          ng-class="{'selected' : storePage.categories }"
+          type="button"
+          name="button"
+          >
+            <i class="icon ion-search"></i>
+          </div>
+        </div>
+      </div>
+      <div
         ng-repeat="(productIndex, product) in products"
         ng-click="goToProduct(product.id)"
         class="product"
         id="category-{{ category.id }}-product-{{ productIndex }}"
         >
           <!-- PRODUCT IMAGE -->
-          <div class="skeleton thumb-size">
+        <div class="skeleton thumb-size">
+          <div
+          id="img-{{ product.id }}"
+          class="thumb"
+          ng-style="{'background-image':'url({{ product.thumbnail }})'}"
+          ></div>
+          <img
+          ng-src="{{ product.thumbnail }}"
+          onload="malbumImageLoaded(this)"
+          id="control-img-{{ product.id }}"
+          image-id="{{ product.id }}"
+          style="display:none"
+          />
+        </div>
+        <div class="info">
+          <!-- PRODUCT NAME -->
+          <p class="name">
+            {{ product.name }}
+          </p>
+          <!-- PRODUCT PRICE -->
+          <div class="price">
             <div
-            id="img-{{ product.id }}"
-            class="thumb"
-            ng-style="{'background-image':'url({{ product.thumbnail }})'}"
-            ></div>
-            <img
-            ng-src="{{ product.thumbnail }}"
-            onload="malbumImageLoaded(this)"
-            id="control-img-{{ product.id }}"
-            image-id="{{ product.id }}"
-            style="display:none"
-            />
-          </div>
-          <div class="info">
-            <!-- PRODUCT NAME -->
-            <p class="name">
-              {{ product.name }}
-            </p>
-            <!-- PRODUCT PRICE -->
-            <div class="price">
-              <div
-              ng-if="product.hasPromotion"
-              class="value value-from"
-              ng-bind="product.valueFrom"
-              >
-              </div>
-              <div
-              ng-class="{ 'm-theme-text-color': product.hasPromotion}"
-              class="value"
-              ng-bind="product.valueTo"
-              >
+            ng-if="product.hasPromotion"
+            class="value value-from"
+            ng-bind="product.valueFrom"
+            >
             </div>
+            <div
+            ng-class="{ 'm-theme-text-color': product.hasPromotion}"
+            class="value"
+            ng-bind="product.valueTo"
+            >
             </div>
           </div>
+        </div>
       </div>
     </div>
     <!-- ################################################################## -->

@@ -253,7 +253,7 @@ module.exports = {
         if ($scope.colors === undefined) {
           helpers.setColors();
         }
-        $scope.pageStyle = '.android .store-menu .selected {' +
+        $scope.pageStyle = '.android .menu .selected {' +
           'border-bottom-color: ' + $scope.colors.darker + '!important;' +
           '}';
       }

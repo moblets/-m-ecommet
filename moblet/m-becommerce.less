@@ -48,7 +48,7 @@ m-becommerce {
     border-radius: 5px;
     height: 30px;
   }
-  .store-menu {
+  .header-menu {
     .menu-button {
       font-size: 14px;
       padding: 10px 0;
@@ -62,7 +62,7 @@ m-becommerce {
     border-radius: 2px;
     height: 42px;
   }
-  .store-menu {
+  .header-menu {
     .menu-button {
       font-size: 16px;
       padding: 18px 0;
@@ -108,7 +108,7 @@ m-becommerce {
     }
   }
 }
-.search-bar {
+.header-bar {
   display: block;
   overflow: auto;
   font-family: "Helvetica Neue",Roboto,"Segoe UI",sans-serif;
@@ -119,11 +119,11 @@ m-becommerce {
     background: #FFFFFF;
     border: none;
 	}
-  .store-menu {
+  .header-menu {
     display: block;
     overflow: auto;
     text-align: center;
-    .menu-button{
+    .menu-button, .search-button {
       width: 50vw;
       float: left;
       opacity: 0.6;
@@ -132,6 +132,16 @@ m-becommerce {
       background-color: initial!important;
       font-weight: 400;
       opacity: 1;
+    }
+  }
+}
+.category {
+  .header-menu {
+    .menu-button {
+      width: 45vw;
+    }
+    .search-button{
+      width: 10vw;
     }
   }
 }
@@ -163,6 +173,11 @@ m-becommerce {
 .category {
   :nth-last-child(1).product {
     border-bottom: none;
+  }
+  .header-bar {
+    .search-input {
+      margin: 10px;
+    }
   }
   .product {
     width: 100vw;
