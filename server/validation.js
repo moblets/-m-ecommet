@@ -10,7 +10,7 @@ module.exports = {
    */
   moblet: function(data, callback) {
     var clientUrlRegEx = /(https?:\/\/)([a-z.]*)(\/)/g;
-    var clientUrl = data.clientUrl.replace()
+    var clientUrl = data.clientUrl.replace(clientUrlRegEx, '$2');
     var valid = false;
     var response = {};
     var options = {
