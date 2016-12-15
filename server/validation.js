@@ -53,7 +53,7 @@ module.exports = {
           valid = true;
           response = {
             data: {
-              apiUrl: 'https://services.' + data.clientUrl + '/rest/'
+              apiUrl: 'https://services.' + clientUrl + '/rest/'
             }
           };
         } else {
