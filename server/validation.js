@@ -10,7 +10,7 @@ module.exports = {
    */
   moblet: function(data, callback) {
     var clientUrlRegEx = /(https?:\/\/)([a-z.]*)(\/)/g;
-    var clientUrl = data.clientUrl.replace(clientUrlRegEx, '$2');
+    data.clientUrl = data.clientUrl.replace(clientUrlRegEx, '$2');
     var valid = false;
     var response = {};
     var options = {
@@ -53,7 +53,7 @@ module.exports = {
           valid = true;
           response = {
             data: {
-              apiUrl: 'https://services.' + clientUrl + '/rest/'
+              apiUrl: 'https://services.' + data.clientUrl + '/rest/'
             }
           };
         } else {
