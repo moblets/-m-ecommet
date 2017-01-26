@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 
 module.exports = {
   /**
@@ -9,6 +10,7 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   moblet: function(data, callback) {
+    var prot = data.clientUrl.split('://')[0] === 'http' ? http : https;
     var valid = false;
     var response = {};
     var options = {
@@ -18,7 +20,7 @@ module.exports = {
       method: 'GET'
     };
 
-    var req = https.request(options, res => {
+    var req = prot.request(options, res => {
       var body = '';
       // URL not found = response !== 200
       if (res.statusCode !== 200) {
