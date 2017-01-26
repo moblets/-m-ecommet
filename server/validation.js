@@ -1,6 +1,3 @@
-const https = require('https');
-const http = require('http');
-
 module.exports = {
   /**
    * Validate a given ID and saves the url
@@ -10,15 +7,24 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   moblet: function(data, callback) {
-    var prot = data.clientUrl.split('://')[0] === 'http' ? http : https;
+    var clientUrlRegEx = /(https?:\/\/)([_a-z.0-9-]*)/i;
+
+    var protName = data.clientUrl.split('://')[0] === 'http' ?
+              'http' :
+              'https';
+    var prot = protName === 'http' ? require('http') : require('https');
+    var clientUrl = data.clientUrl
+      .replace(clientUrlRegEx, '$2')
+      .replace('/', '');
+    console.log(clientUrl);
     var valid = false;
     var response = {};
     var options = {
-      hostname: data.clientUrl,
-      port: 443,
-      path: '/rest/common/conf/store',
-      method: 'GET'
+      hostname: clientUrl,
+      path: '/rest/common/conf/store'
     };
+    console.log(protName);
+    console.log(options);
 
     var req = prot.request(options, res => {
       var body = '';
@@ -53,7 +59,7 @@ module.exports = {
           valid = true;
           response = {
             data: {
-              apiUrl: data.clientUrl + '/rest/'
+              apiUrl: protName + '://' + clientUrl + '/rest/'
             }
           };
         } else {
