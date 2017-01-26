@@ -5,9 +5,9 @@
     "hint": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
   },
   "clientUrl": {
-    "label": "URL da loja",
-    "hint": "Insira a URL da loja da Becommerce",
-    "placeholder": "virtualkar.com.br",
+    "label": "URL da API da loja",
+    "hint": "Insira a URL da API da loja da Becommerce",
+    "placeholder": "https://services.virtualkar.com.br",
     "url_error": "URL não é de uma loja Becommerce válida"
   },
   "clientId": {

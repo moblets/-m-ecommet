@@ -9,12 +9,10 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   moblet: function(data, callback) {
-    var clientUrlRegEx = /(https?:\/\/)([a-z.]*)(\/)/g;
-    var clientUrl = data.clientUrl.replace(clientUrlRegEx, '$2');
     var valid = false;
     var response = {};
     var options = {
-      hostname: 'services.' + clientUrl,
+      hostname: data.clientUrl,
       port: 443,
       path: '/rest/common/conf/store',
       method: 'GET'
@@ -53,7 +51,7 @@ module.exports = {
           valid = true;
           response = {
             data: {
-              apiUrl: 'https://services.' + clientUrl + '/rest/'
+              apiUrl: data.clientUrl + '/rest/'
             }
           };
         } else {
