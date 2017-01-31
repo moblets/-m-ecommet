@@ -4,11 +4,16 @@
     "description": "Crie sua loja virtual na Becommerce",
     "hint": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
   },
-  "clientUrl": {
+  "apiUrl": {
     "label": "URL da API da loja",
     "hint": "Insira a URL da API da loja da Becommerce",
     "placeholder": "https://services.virtualkar.com.br",
-    "url_error": "URL não é de uma loja Becommerce válida"
+    "api_url_error": "URL não é da API de uma loja Becommerce válida"
+  },
+  "siteUrl": {
+    "label": "URL da loja",
+    "hint": "Insira a URL da loja da Becommerce",
+    "placeholder": "https://virtualkar.com.br"
   },
   "clientId": {
     "label": "ID de cliente",

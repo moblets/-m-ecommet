@@ -7,20 +7,21 @@ module.exports = {
    * if it's valid and an Object with the response data
    */
   moblet: function(data, callback) {
-    var clientUrlRegEx = /(https?:\/\/)([_a-z.0-9-]*)/i;
+    var apiUriRegEl = /(https?:\/\/)([_a-z.0-9-]*)/i;
 
-    var protName = data.clientUrl.split('://')[0] === 'http' ?
+    var protName = data.apiUrl.split('://')[0] === 'http' ?
               'http' :
               'https';
     var prot = protName === 'http' ? require('http') : require('https');
-    var clientUrl = data.clientUrl
-      .replace(clientUrlRegEx, '$2')
+
+    var apiUrl = data.apiUrl
+      .replace(apiUriRegEl, '$2')
       .replace('/', '');
-    console.log(clientUrl);
+    console.log(apiUrl);
     var valid = false;
     var response = {};
     var options = {
-      hostname: clientUrl,
+      hostname: apiUrl,
       path: '/rest/common/conf/store'
     };
     console.log(protName);
@@ -33,7 +34,7 @@ module.exports = {
         valid = false;
         response = {
           errors: {
-            clientUrl: 'url_error'
+            apiUrl: 'api_url_error'
           }
         };
       }
@@ -51,7 +52,7 @@ module.exports = {
           valid = false;
           response = {
             errors: {
-              clientUrl: 'url_error'
+              apiUrl: 'api_url_error'
             }
           };
         } else if (body.clientHash === data.clientId) {
@@ -59,7 +60,7 @@ module.exports = {
           valid = true;
           response = {
             data: {
-              apiUrl: protName + '://' + clientUrl + '/rest/'
+              apiUrl: protName + '://' + apiUrl + '/rest/'
             }
           };
         } else {
@@ -82,7 +83,7 @@ module.exports = {
       valid = false;
       response = {
         errors: {
-          clientUrl: 'url_error'
+          apiUrl: 'api_url_error'
         }
       };
       callback(valid, response);

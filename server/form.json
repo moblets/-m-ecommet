@@ -1,7 +1,13 @@
 {
   "fields": [
     {
-      "name": "clientUrl",
+      "name": "apiUrl",
+      "type": "text",
+      "required": true,
+      "min-length": 10
+    },
+    {
+      "name": "siteUrl",
       "type": "text",
       "required": true,
       "min-length": 10
