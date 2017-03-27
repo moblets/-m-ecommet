@@ -1,6 +1,14 @@
 {
   "fields": [
     {
+      "name": "buttonApp",
+      "type": "button"
+    },
+    {
+      "name": "buttonAppWeb",
+      "type": "button"
+    },
+    {
       "name": "apiUrl",
       "type": "text",
       "required": true,
