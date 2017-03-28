@@ -1,11 +1,11 @@
 {
   "fields": [
     {
-      "name": "buttonApp",
+      "name": "buttonAppWeb",
       "type": "moblet-purchase"
     },
     {
-      "name": "buttonAppWeb",
+      "name": "buttonApp",
       "type": "moblet-purchase"
     },
     {
