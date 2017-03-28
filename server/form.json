@@ -7,7 +7,7 @@
     },
     {
       "name": "buttonApp",
-      "type": "moblet-purchase",
+      "type": "button",
       "size": 5
     },
     {
