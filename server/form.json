@@ -2,11 +2,13 @@
   "fields": [
     {
       "name": "buttonAppWeb",
-      "type": "moblet-purchase"
+      "type": "moblet-purchase",
+      "size": 7
     },
     {
       "name": "buttonApp",
-      "type": "moblet-purchase"
+      "type": "moblet-purchase",
+      "size": 5
     },
     {
       "name": "apiUrl",
