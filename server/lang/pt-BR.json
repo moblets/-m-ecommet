@@ -5,10 +5,10 @@
     "hint": "Preencha os campos abaixo com seus dados da Becommerce para ter sua loja no celular. Caso ainda não seja cliente, contate-nos."
   },
   "buttonApp": {
-    "label": "quero loja no app",
+    "label": "quero loja no app"
   },
   "buttonAppWeb": {
-    "label": "quero loja web e no app",
+    "label": "quero loja web e no app"
   },
   "apiUrl": {
     "label": "URL da API da loja",
