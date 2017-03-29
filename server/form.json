@@ -6,11 +6,6 @@
       "size": 7
     },
     {
-      "name": "buttonApp",
-      "type": "button",
-      "size": 5
-    },
-    {
       "name": "apiUrl",
       "type": "text",
       "required": true,
