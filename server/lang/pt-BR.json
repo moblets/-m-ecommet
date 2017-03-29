@@ -6,7 +6,7 @@
   },
   "buttonAppWeb": {
     "label": "quero loja web e no app",
-    "hint": "quero loja no app
+    "hint": "quero loja no app"
   },
   "apiUrl": {
     "label": "URL da API da loja",
